@@ -1,0 +1,16 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "version": "1.15.2",
+    "libraryName": "tarea-4",
+    "libraryId": "59fc6ec9-c5fa-41c1-b451-71b1eea9dbf7",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "tarea-4",
+    "solutionShortDescription": "tarea-4 description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}

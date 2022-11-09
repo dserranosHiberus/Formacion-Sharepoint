@@ -1,0 +1,16 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "version": "1.15.2",
+    "libraryName": "taller-3",
+    "libraryId": "3fb2f8a5-e870-404c-bbcd-f1c1e96927a5",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "Taller 3",
+    "solutionShortDescription": "Taller 3 description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}

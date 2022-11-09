@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "tarea-4-client-side-solution",
+    "id": "59fc6ec9-c5fa-41c1-b451-71b1eea9dbf7",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.15.2"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "tarea-4 description"
+      },
+      "longDescription": {
+        "default": "tarea-4 description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "tarea-4 Feature",
+        "description": "The feature that activates elements of the tarea-4 solution.",
+        "id": "1c76bfcd-8543-44d5-b6b9-499187186f43",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/tarea-4.sppkg"
+  }
+}
