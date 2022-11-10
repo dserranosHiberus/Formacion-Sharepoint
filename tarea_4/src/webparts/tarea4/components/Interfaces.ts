@@ -13,11 +13,9 @@ export interface ITarea4Props {
     updateProperty: (value: string) => void;
 }
 
-
-
 export interface ISectoresyUnidadesProps {
     ID: number;
-    CodigoDelSector: number;
+    CodigoDelSector: string;
     Denominacion: string;
     URLImagenSector: string;
     URLListaGrupos: string;
@@ -29,7 +27,7 @@ export interface ISectoresyUnidadesProps {
 
 export interface IGruposdeUnidadProps {
     ID: number;
-    CodigoDeGrupo: number;
+    CodigoDeGrupo: string;
     SectorAsociado: string;
     Denominacion: string;
     Descripcion: string;

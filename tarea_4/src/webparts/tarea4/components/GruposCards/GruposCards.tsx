@@ -10,13 +10,14 @@ import {
 } from '@fluentui/react/lib/DocumentCard';
 import { getTheme } from '@fluentui/react';
 
-import { IGruposdeUnidadProps } from '../Interfaces'
+import { IGruposdeUnidadProps } from '../Interfaces';
 import EditGrupo from "../EditGrupo/EditGrupo";
+import { WebPartContext } from "@microsoft/sp-webpart-base";
 
 
 const theme = getTheme();
 
-function GruposCards(props: { grupos: IGruposdeUnidadProps[] }) {
+function GruposCards(props: { grupos: IGruposdeUnidadProps[], context: WebPartContext }) {
 
 
     const [tarea4, setTarea4] = useState<IGruposdeUnidadProps[]>([]);
@@ -54,7 +55,6 @@ function GruposCards(props: { grupos: IGruposdeUnidadProps[] }) {
                                     shouldTruncate
                                 />
                             </DocumentCardDetails>
-
                             <DocumentCardDetails>
                                 <DocumentCardTitle
                                     title={e.Descripcion}
@@ -76,7 +76,7 @@ function GruposCards(props: { grupos: IGruposdeUnidadProps[] }) {
                         </DocumentCard>
                     </div>
                 ))
-                : visible === 1 ? (<EditGrupo {...(groupSelected)} />) : <p>Hola</p>
+                : visible === 1 && groupSelected != undefined ? (<EditGrupo {...{ grupo: groupSelected, context: props.context }} />) : <p>Hola</p>
             )}
         </>
     )

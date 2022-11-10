@@ -90,7 +90,7 @@ const Tarea4 = (props: ITarea4Props) => {
   return (
     <>
       {displayElements2 &&
-        <GruposCards {...{ grupos: gruposdeUnidad }} />
+        <GruposCards {...{ grupos: gruposdeUnidad, context: props.context }} />
       }
     </>
   )
