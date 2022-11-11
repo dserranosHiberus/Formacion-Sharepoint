@@ -1,14 +1,15 @@
 import * as React from 'react';
 import { useState, useEffect } from "react";
+import { ITarea4Props } from '../Interfaces';
+import { IGruposProps } from '../Interfaces';
+import { getSP } from "../../../../pnpjsConfig";
+import { SPFI } from "@pnp/sp";
 
 import { TaxonomyPicker, IPickerTerms, UpdateType, UpdateAction, IPickerTerm } from "@pnp/spfx-controls-react/lib/TaxonomyPicker";
 
 import { TextField, MaskedTextField, ITextFieldStyles } from '@fluentui/react/lib/TextField';
 import { Stack, IStackProps, IStackStyles } from '@fluentui/react/lib/Stack';
 import {
-    ComboBox,
-    IComboBoxStyles,
-    IComboBoxOption,
     SelectableOptionMenuItemType,
     DatePicker,
     DayOfWeek,
@@ -18,13 +19,29 @@ import {
     IDropdownStyles,
     defaultDatePickerStrings
 } from '@fluentui/react';
-import { DefaultButton } from '@fluentui/react/lib/Button';
+import { PrimaryButton } from '@fluentui/react/lib/Button';
 import { Toggle } from '@fluentui/react/lib/Toggle';
 
-import { IGruposdeUnidadProps } from '../Interfaces';
-import { WebPartContext } from '@microsoft/sp-webpart-base';
 
-function EditGrupo(props: { grupo: IGruposdeUnidadProps, context: WebPartContext }) {
+import { WebPartContext } from '@microsoft/sp-webpart-base';
+import { DAO } from '../DAO';
+
+async function getFields(props: ITarea4Props) {
+
+    const LIST2_NAME = "Grupos de la Unidad X";
+    let _sp: SPFI = getSP(props.context);
+    try {
+        const results = await _sp.web.lists.getByTitle(LIST2_NAME).fields.getByInternalNameOrTitle("Tematica")();
+        console.log("Resultado", results)
+    } catch (error) {
+        console.log(error)
+    }
+
+
+}
+
+function EditGrupo(props: { grupo: IGruposProps, DAO: DAO }) {
+    getFields
 
     // const [displayElements3, setDisplayElements3] = useState(false)
     // const [selected, setSelected] = useState<IGruposdeUnidadProps>();
@@ -46,23 +63,12 @@ function EditGrupo(props: { grupo: IGruposdeUnidadProps, context: WebPartContext
 
     const narrowTextFieldStyles: Partial<ITextFieldStyles> = { fieldGroup: { maxWidth: 100 } };
     const dropdownStyles: Partial<IDropdownStyles> = {
-        dropdown: { width: 300 },
+        dropdown: { maxWidth: 300 },
     };
-    const comboBoxStyles: Partial<IComboBoxStyles> = { root: { maxWidth: 300 } };
 
     function handleEdit() {
         alert("Hola Holita ")
     }
-
-
-    // const onChangeSecondTextFieldValue = React.useCallback(
-    //     (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
-    //         if (!newValue || newValue.length <= 5) {
-    //             setSecondTextFieldValue(newValue || '');
-    //         }
-    //     },
-    //     [],
-    // );
 
     const onDropdownChange = React.useCallback((event: React.FormEvent<HTMLDivElement>, option: IDropdownOption) => {
         setFirstDayOfWeek(option.key as number);
@@ -73,25 +79,15 @@ function EditGrupo(props: { grupo: IGruposdeUnidadProps, context: WebPartContext
         { key: 'A', text: 'Option A' },
 
     ];
-    const optionsAmbito: IComboBoxOption[] = [
-        { key: 'Header1', text: 'Ambito', itemType: SelectableOptionMenuItemType.Header },
-        { key: 'A', text: 'Option A' },
 
-    ];
     const optionsGroupType: IDropdownOption[] = [
         { key: 'Header1', text: 'Tipo de Grupo', itemType: DropdownMenuItemType.Header },
         { key: 'A', text: 'Option A' },
     ];
+
+
     const optionsTematica: IDropdownOption[] = [
         { key: 'Header1', text: 'Tematica', itemType: DropdownMenuItemType.Header },
-        { key: 'A', text: 'Option A' },
-    ];
-    const optionsPais: IDropdownOption[] = [
-        { key: 'Header1', text: 'Pais', itemType: DropdownMenuItemType.Header },
-        { key: 'A', text: 'Option A' },
-    ];
-    const optionsCiudad: IDropdownOption[] = [
-        { key: 'Header1', text: 'Ciudad', itemType: DropdownMenuItemType.Header },
         { key: 'A', text: 'Option A' },
     ];
 
@@ -127,19 +123,11 @@ function EditGrupo(props: { grupo: IGruposdeUnidadProps, context: WebPartContext
                         // DatePicker uses English strings by default. For localized apps, you must override this prop.
                         strings={defaultDatePickerStrings}
                     />
-                    {/* <TextField
-                        placeholder={listaGrupo.CodigoDeGrupo}
-                        label="Código de Grupo"
-                        value={secondTextFieldValue}
-                        onChange={onChangeSecondTextFieldValue}
-                        styles={narrowTextFieldStyles}
-                    /> */}
                 </Stack>
-
                 <Stack {...columnProps}>
-                    <Stack horizontal {...columnProps}>
-                        <DefaultButton style={{ maxWidth: "80px" }} text="Modificar Datos" onClick={() => handleEdit()} allowDisabledFocus />
-                        <DefaultButton style={{ maxWidth: "80px" }} text="Volver a Grupos" onClick={() => alert("Volver")} allowDisabledFocus />
+                    <Stack horizontal horizontalAlign={'end'} {...columnProps}>
+                        <PrimaryButton style={{ maxWidth: "100px" }} text="Modificar Datos" onClick={() => handleEdit()} allowDisabledFocus />
+                        <PrimaryButton style={{ maxWidth: "100px" }} text="Volver a Grupos" onClick={() => alert("Volver")} allowDisabledFocus />
                     </Stack>
                     <Toggle label="Estado" defaultChecked onText="Abierto" offText="Cerrado" onChange={() => alert("Cambio de estado")} />
                     <Dropdown
@@ -154,28 +142,31 @@ function EditGrupo(props: { grupo: IGruposdeUnidadProps, context: WebPartContext
                         options={optionsTematica}
                         styles={dropdownStyles}
                     />
-                    <ComboBox
-                        placeholder={listaGrupo.Ambito}
-                        defaultSelectedKey="A"
+                    <TaxonomyPicker allowMultipleSelections={true}
+                        // initialValues={null}
+                        termsetNameOrID="Ambitos"
+                        panelTitle="Selecciona un ambito"
                         label="Ambito"
-                        multiSelect
-                        options={optionsAmbito}
-                        styles={comboBoxStyles}
-                    />
-                    <TaxonomyPicker allowMultipleSelections={false}
-                        termsetNameOrID="Pais"
-                        panelTitle="Selecciona un país"
-                        label="Pais"
                         onChange={onTaxPickerChange}
-                        context={props.context}
+                        context={props.DAO.getContext()}
                         isTermSetSelectable={false}
                     />
                     <TaxonomyPicker allowMultipleSelections={false}
-                        termsetNameOrID="Ciudad"
+                        //  initialValues={listaGrupo.Ambito}
+                        termsetNameOrID="Paises"
+                        panelTitle="Selecciona un país"
+                        label="Pais"
+                        onChange={onTaxPickerChange}
+                        context={props.DAO.getContext()}
+                        isTermSetSelectable={false}
+                    />
+                    <TaxonomyPicker allowMultipleSelections={false}
+                        //  initialValues={listaGrupo.Ambito}
+                        termsetNameOrID="Capitales"
                         panelTitle="Selecciona una Ciudad"
                         label="Ciudad"
                         onChange={onTaxPickerChange}
-                        context={props.context}
+                        context={props.DAO.getContext()}
                         isTermSetSelectable={false}
                     />
                     {/* <TextField placeholder={listaGrupo.AmbitoGeografico} label="Ambito Geográfico" />
