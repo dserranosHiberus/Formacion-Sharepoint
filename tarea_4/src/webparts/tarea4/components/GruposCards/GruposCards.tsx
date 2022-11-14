@@ -10,32 +10,37 @@ import {
 } from '@fluentui/react/lib/DocumentCard';
 import { getTheme } from '@fluentui/react';
 
-import { IGruposProps } from '../Interfaces';
+import { IGruposdeUnidadProps } from '../Interfaces';
 import EditGrupo from "../EditGrupo/EditGrupo";
 import { WebPartContext } from "@microsoft/sp-webpart-base";
-import { DAO } from "../DAO";
 
 
 const theme = getTheme();
 
-function GruposCards(props: { DAOGrupos: DAO, BailarFuncion: () => void }) {
+function GruposCards(props: { grupos: IGruposdeUnidadProps[], context: WebPartContext }) {
 
-    const [groupSelected, setGroupSelected] = useState<IGruposProps>();
+
+    const [tarea4, setTarea4] = useState<IGruposdeUnidadProps[]>([]);
+    const [groupSelected, setGroupSelected] = useState<IGruposdeUnidadProps>();
     const [visible, setVisible] = useState(0);
+
+    useEffect(() => {
+        setTarea4(props.grupos);
+    }, [props])
 
     const cardStyles: IDocumentCardStyles = {
         root: { display: 'inline-block', marginRight: 20, marginBottom: 20, width: 320 },
     };
 
-    function editGroup(e: IGruposProps) {
+    function editGroup(e: IGruposdeUnidadProps) {
         setGroupSelected(e);
         setVisible(1)
     }
-    props.BailarFuncion()
+
     return (
         <>
             {(visible === 0 ?
-                props.DAOGrupos.getGrupos().map(e => (
+                tarea4.map(e => (
                     <div key={e.ID}>
                         <DocumentCard
                             aria-label={'Document Card with image. How to make a good design. ' +
@@ -71,7 +76,7 @@ function GruposCards(props: { DAOGrupos: DAO, BailarFuncion: () => void }) {
                         </DocumentCard>
                     </div>
                 ))
-                : visible === 1 && groupSelected != undefined ? (<EditGrupo {...{ grupo: groupSelected, DAO: props.DAOGrupos }} />) : <p>Hola</p>
+                : visible === 1 && groupSelected != undefined ? (<EditGrupo {...{ grupo: groupSelected, context: props.context }} />) : <p>Hola</p>
             )}
         </>
     )
