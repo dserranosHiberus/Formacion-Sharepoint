@@ -3,16 +3,16 @@ import * as React from 'react';
 import { ITarea4Props } from './Interfaces';
 import { SPFI } from "@pnp/sp";
 import { getSP } from "../../../pnpjsConfig";
-import { ISectoresyUnidadesProps } from './Interfaces';
-import { IGruposdeUnidadProps } from './Interfaces';
+import { ISectoresProps } from './Interfaces';
+import { IGruposProps } from './Interfaces';
 import { useEffect, useState } from "react";
 
 import GruposCards from './GruposCards/GruposCards';
 
 const Tarea4 = (props: ITarea4Props) => {
 
-  const [sectoresyUnidades, setSectoresyUnidades] = useState<ISectoresyUnidadesProps[]>([])
-  const [gruposdeUnidad, setGruposdeUnidad] = useState<IGruposdeUnidadProps[]>([])
+  const [sectoresyUnidades, setSectoresyUnidades] = useState<ISectoresProps[]>([])
+  const [gruposdeUnidad, setGruposdeUnidad] = useState<IGruposProps[]>([])
   const [displayElements1, setDisplayElements1] = useState(false)
   const [displayElements2, setDisplayElements2] = useState(false)
 

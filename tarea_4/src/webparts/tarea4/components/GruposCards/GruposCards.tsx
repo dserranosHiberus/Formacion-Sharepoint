@@ -10,18 +10,18 @@ import {
 } from '@fluentui/react/lib/DocumentCard';
 import { getTheme } from '@fluentui/react';
 
-import { IGruposdeUnidadProps } from '../Interfaces';
+import { IGruposProps } from '../Interfaces';
 import EditGrupo from "../EditGrupo/EditGrupo";
 import { WebPartContext } from "@microsoft/sp-webpart-base";
 
 
 const theme = getTheme();
 
-function GruposCards(props: { grupos: IGruposdeUnidadProps[], context: WebPartContext }) {
+function GruposCards(props: { grupos: IGruposProps[], context: WebPartContext }) {
 
 
-    const [tarea4, setTarea4] = useState<IGruposdeUnidadProps[]>([]);
-    const [groupSelected, setGroupSelected] = useState<IGruposdeUnidadProps>();
+    const [tarea4, setTarea4] = useState<IGruposProps[]>([]);
+    const [groupSelected, setGroupSelected] = useState<IGruposProps>();
     const [visible, setVisible] = useState(0);
 
     useEffect(() => {
@@ -32,7 +32,7 @@ function GruposCards(props: { grupos: IGruposdeUnidadProps[], context: WebPartCo
         root: { display: 'inline-block', marginRight: 20, marginBottom: 20, width: 320 },
     };
 
-    function editGroup(e: IGruposdeUnidadProps) {
+    function editGroup(e: IGruposProps) {
         setGroupSelected(e);
         setVisible(1)
     }
