@@ -43,12 +43,9 @@ async function getFields(props: ITarea4Props) {
 function EditGrupo(props: { grupo: IGruposProps, context: WebPartContext }) {
 
     getFields
-    // const [displayElements3, setDisplayElements3] = useState(false)
-    // const [selected, setSelected] = useState<IGruposdeUnidadProps>();
 
     let listaGrupo = props.grupo
-    // setSelected(listaGrupo);
-    // setDisplayElements3(true)
+
     console.log(listaGrupo)
 
     const stackTokens = { childrenGap: 50 };
@@ -163,8 +160,7 @@ function EditGrupo(props: { grupo: IGruposProps, context: WebPartContext }) {
                         context={props.context}
                         isTermSetSelectable={false}
                     />
-                    {/* <TextField placeholder={listaGrupo.AmbitoGeografico} label="Ambito Geográfico" />
-                    <TextField placeholder={listaGrupo.AmbitoOrganizativoInternacional} label="Ambito Organizativo Internacional" /> */}
+
                 </Stack>
             </Stack>
         </>
