@@ -10,7 +10,8 @@ import { IReadonlyTheme } from "@microsoft/sp-component-base";
 
 import * as strings from "Tarea4WebPartStrings";
 import Tarea4 from "./components/Tarea4";
-import { ITarea4Props } from "./components/Interfaces";
+import { ITarea4Props } from "./models/Interfaces";
+import { getSP } from "../../pnpjsConfig"
 
 export interface ITarea4WebPartProps {
   description: string;
@@ -43,10 +44,11 @@ export default class Tarea4WebPart extends BaseClientSideWebPart<ITarea4WebPartP
     ReactDom.render(element, this.domElement);
   }
 
-  protected onInit(): Promise<void> {
+  protected async onInit(): Promise<void> {
     this._environmentMessage = this._getEnvironmentMessage();
 
-    return super.onInit();
+    await super.onInit();
+    getSP(this.context)
   }
 
   private _getEnvironmentMessage(): string {
