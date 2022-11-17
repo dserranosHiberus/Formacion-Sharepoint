@@ -8,52 +8,28 @@ const nameListGrupos = "Grupos de la Unidad X";
 export const getGruposInfo = async (): Promise<IGrupos[]> => {
 
     const gruposCall = await getSP().web.lists.getByTitle(nameListGrupos).items.select("*", "SectorAsociado/Denominacion", "TaxCatchAll/Term").expand("TaxCatchAll", "SectorAsociado")()
-    const grupos = gruposCall.map((items) => {
+    const grupos: IGrupos[] = gruposCall.map<IGrupos>((item) => {
         return {
-            ID: items.ID,
-            CodigoDeGrupo: items.CodigoDeGrupo,
-            SectorAsociado: items.SectorAsociado.Denominacion,
-            Denominacion: items.Denominacion,
-            Descripcion: items.Descripcion,
-            FechaDeCreacion: new Date(items.FechaDeCreacion).toLocaleDateString('es-ES'),
-            FechaDeFinalizacion: new Date(items.FechaDeFinalizacion).toLocaleDateString('es-ES'),
-            Ambito: items.TaxCatchAll[2].Term,
-            TipoDeGrupo: items.TipoDeGrupo,
-            Tematica: items.Tematica,
-            AmbitoGeografico: items.AmbitoGeografico,
-            AmbitoOrganizativoInternacional: items.AmbitoOrganizativoInternacional,
-            Estado: items.Estado,
-            Pais: items.TaxCatchAll[1].Term,
-            Ciudad: items.TaxCatchAll[0].Term,
-            Attachments: items.Attachments
+            ID: item.ID,
+            CodigoDeGrupo: item.CodigoDeGrupo,
+            SectorAsociado: item.SectorAsociado.Denominacion,
+            Denominacion: item.Denominacion,
+            Descripcion: item.Descripcion,
+            FechaDeCreacion: new Date(item.FechaDeCreacion).toLocaleDateString('es-ES'),
+            FechaDeFinalizacion: new Date(item.FechaDeFinalizacion).toLocaleDateString('es-ES'),
+            Ambito: item.TaxCatchAll[2].Term,
+            TipoDeGrupo: item.TipoDeGrupo,
+            Tematica: item.Tematica,
+            AmbitoGeografico: item.AmbitoGeografico,
+            AmbitoOrganizativoInternacional: item.AmbitoOrganizativoInternacional,
+            Estado: item.Estado,
+            Pais: item.TaxCatchAll[1].Term,
+            Ciudad: item.TaxCatchAll[0].Term,
+            Attachments: item.Attachments
         }
     });
     return grupos;
 }
-
-// export const formattingList = async (): Promise<IGrupos[]> => {
-//    const  (item) => {
-//         return {
-//             ID: item.ID,
-//             CodigoDeGrupo: item.CodigoDeGrupo,
-//             SectorAsociado: item.SectorAsociado.Denominacion,
-//             Denominacion: item.Denominacion,
-//             Descripcion: item.Descripcion,
-//             FechaDeCreacion: new Date(item.FechaDeCreacion).toLocaleDateString('es-ES'),
-//             FechaDeFinalizacion: new Date(item.FechaDeFinalizacion).toLocaleDateString('es-ES'),
-//             Ambito: item.TaxCatchAll[2].Term,
-//             TipoDeGrupo: item.TipoDeGrupo,
-//             Tematica: item.Tematica,
-//             AmbitoGeografico: item.AmbitoGeografico,
-//             AmbitoOrganizativoInternacional: item.AmbitoOrganizativoInternacional,
-//             Estado: item.Estado,
-//             Pais: item.TaxCatchAll[1].Term,
-//             Ciudad: item.TaxCatchAll[0].Term,
-//             Attachments: item.Attachments
-//         }
-//     };
-//     return grupos;
-// }
 
 export const getTematica = async (): Promise<IFields> => {
 
@@ -66,7 +42,7 @@ export const getGroupSelect = async (Id: number): Promise<any> => {
 
     const CallGroupSelected = await getSP().web.lists.getByTitle(nameListGrupos).items.getById(Id).select("*", "SectorAsociado/Denominacion", "TaxCatchAll/Term").expand("TaxCatchAll", "SectorAsociado")()
     console.log("Antes del return", CallGroupSelected)
-    const grupo = {
+    const grupo: IGrupos = {
         ID: CallGroupSelected.ID,
         CodigoDeGrupo: CallGroupSelected.CodigoDeGrupo,
         SectorAsociado: CallGroupSelected.SectorAsociado.Denominacion,
