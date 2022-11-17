@@ -39,7 +39,7 @@ export interface IGrupos {
     AmbitoGeografico: string;
     AmbitoOrganizativoInternacional: string;
     Pais: string;
-    Estado: Boolean;
+    Estado: boolean;
     Ciudad: string;
     Attachments: string;
 }

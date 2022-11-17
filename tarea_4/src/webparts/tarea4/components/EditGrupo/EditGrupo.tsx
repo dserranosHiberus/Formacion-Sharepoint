@@ -2,8 +2,8 @@ import * as React from 'react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { IGrupos, ITarea4Props, IFields } from '../../models/Interfaces';
-import { getGroupSelect, getGruposInfo, getTematica } from "../../services/DAOService";
+import { IGrupos } from '../../models/Interfaces';
+import { getGroupSelect } from "../../services/DAOService";
 
 // import { TaxonomyPicker, IPickerTerms, UpdateType, UpdateAction, IPickerTerm } from "@pnp/spfx-controls-react/lib/TaxonomyPicker";
 // import { TextField, MaskedTextField, ITextFieldStyles } from '@fluentui/react/lib/TextField';
@@ -25,19 +25,18 @@ import { getGroupSelect, getGruposInfo, getTematica } from "../../services/DAOSe
 function EditGrupo() {
 
     const { groupId } = useParams()
-    console.log(groupId)
     const [groupSelected, setGroupSelected] = useState<IGrupos>()
 
     React.useEffect(() => {
         const getGrupo = async () => {
-            const responseGroup: IGrupos = await getGroupSelect(parseInt(groupId))
+            const responseGroup = await getGroupSelect(parseInt(groupId))
             console.log('Respuesta de getGrupo', responseGroup)
             setGroupSelected(responseGroup)
         }
         getGrupo();
+        console.log(groupSelected)
     }, [groupId])
 
-    console.log(groupSelected)
     // let listaGrupo = props.grupo
 
     // console.log(listaGrupo)
@@ -86,6 +85,7 @@ function EditGrupo() {
 
     return (
         <>
+            <p>Hola</p>
             {/* <Stack horizontal tokens={stackTokens} styles={stackStyles}>
                 <Stack {...columnProps}>
                     <Dropdown
@@ -158,7 +158,7 @@ function EditGrupo() {
                         isTermSetSelectable={false}
                     />
                 </Stack>
-            </Stack> */}
+    </Stack> */}
         </>
     );
 };

@@ -21,10 +21,7 @@ import { getTheme } from '@fluentui/react';
 const theme = getTheme();
 
 const GruposCards = () => {
-
     const [groupList, setGroupList] = React.useState<IGrupos[]>([])
-    const [groupSelected, setGroupSelected] = React.useState<IGrupos>();
-    const [visible, setVisible] = React.useState(0);
 
     React.useEffect(() => {
         const getGrupos = async () => {

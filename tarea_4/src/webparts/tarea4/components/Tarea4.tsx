@@ -3,7 +3,6 @@ import * as React from 'react';
 import GruposCards from './GruposCards/GruposCards';
 import EditGrupo from './EditGrupo/EditGrupo';
 import { ITarea4Props } from '../models/Interfaces';
-import { IGrupos } from '../models/Interfaces';
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
