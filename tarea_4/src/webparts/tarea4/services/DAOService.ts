@@ -37,7 +37,7 @@ export const getTematica = async (): Promise<IFields> => {
 }
 
 
-export const getGroupSelect = async (Id: number): Promise<any> => {
+export const getGroupSelect = async (Id: number): Promise<IGrupos> => {
 
     const CallGroupSelected = await getSP().web.lists.getByTitle(nameListGrupos).items.getById(Id).select("*", "SectorAsociado/Denominacion", "TaxCatchAll/Term").expand("TaxCatchAll", "SectorAsociado")()
     console.log("Antes del return", CallGroupSelected)

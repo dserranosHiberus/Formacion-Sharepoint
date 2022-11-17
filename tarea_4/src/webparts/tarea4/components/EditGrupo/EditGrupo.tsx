@@ -24,18 +24,19 @@ import {
     IDropdownStyles,
     defaultDatePickerStrings
 } from '@fluentui/react';
+import { SPContext } from '../Tarea4';
 
-
-function EditGrupo(props: { context: WebPartContext }) {
+function EditGrupo() {
 
     const { groupId } = useParams()
     const [groupSelected, setGroupSelected] = useState<IGrupos>()
 
-    const context = props.context
+    const context = React.useContext(SPContext)
+    console.log("SPContext", context)
 
     React.useEffect(() => {
         const getGrupo = async () => {
-            const responseGroup = await getGroupSelect(parseInt(groupId))
+            let responseGroup: IGrupos = await getGroupSelect(parseInt(groupId))
             console.log('Respuesta de getGrupo', responseGroup)
             setGroupSelected(responseGroup)
         }
@@ -43,6 +44,7 @@ function EditGrupo(props: { context: WebPartContext }) {
     }, [groupId])
 
     console.log("Fuera del effect", groupSelected)
+    console.log("GroupSelect.SectorAsociado", groupSelected?.Ambito)
 
     const stackTokens = { childrenGap: 50 };
     const stackStyles: Partial<IStackStyles> = { root: { width: 650 } };
@@ -94,6 +96,7 @@ function EditGrupo(props: { context: WebPartContext }) {
                         options={optionsSector}
                         styles={dropdownStyles}
                     />
+                    {/* <p>{groupSelected.SectorAsociado}</p> */}
                     {/* <TextField placeholder={groupSelected.Denominacion} label="Denominación" /> */}
                     {/* <TextField placeholder={groupSelected.Descripcion} label="Descripción" multiline rows={3} /> */}
                     {/* <DatePicker
