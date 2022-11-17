@@ -1,7 +1,6 @@
 import { getSP } from "../../../pnpjsConfig";
-import { IGrupos } from "../models/Interfaces";
+import { IGrupos, ITarea4Props } from "../models/Interfaces";
 import { IFields } from "../models/Interfaces";
-
 
 const nameListGrupos = "Grupos de la Unidad X";
 

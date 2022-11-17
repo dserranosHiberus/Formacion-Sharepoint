@@ -23,6 +23,7 @@ const theme = getTheme();
 const GruposCards = () => {
     const [groupList, setGroupList] = React.useState<IGrupos[]>([])
 
+
     React.useEffect(() => {
         const getGrupos = async () => {
             const responseGroups = await getGruposInfo()
@@ -30,6 +31,8 @@ const GruposCards = () => {
         }
         getGrupos()
     }, [])
+
+    console.log("Esta en grupos cards", groupList)
 
     const cardStyles: IDocumentCardStyles = {
         root: { display: 'inline-block', marginRight: 20, marginBottom: 20, width: 320 },

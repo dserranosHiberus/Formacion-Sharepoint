@@ -13,7 +13,7 @@ const Tarea4 = (props: ITarea4Props) => {
       <Router>
         <Routes>
           <Route path="/_layouts/15/workbench.aspx/" element={<GruposCards />} />
-          <Route path="/_layouts/15/workbench.aspx/editGroup/:groupId" element={<EditGrupo />} />
+          <Route path="/_layouts/15/workbench.aspx/editGroup/:groupId" element={<EditGrupo {...{ context: props.context }} />} />
         </Routes>
       </Router>
 
