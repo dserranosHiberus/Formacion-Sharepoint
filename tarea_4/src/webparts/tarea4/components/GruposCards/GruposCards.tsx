@@ -1,12 +1,9 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
 // import styles from "../Taller3.module.scss";
 
-// import EditGrupo from "../EditGrupo/EditGrupo";
 import { IGrupos } from '../../models/Interfaces';
 import { getGruposInfo } from "../../services/DAOService";
 
-// import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Link } from 'react-router-dom'
 
 import {
@@ -18,15 +15,18 @@ import {
 import { getTheme } from '@fluentui/react';
 
 
+
+
+
 const theme = getTheme();
 
 const GruposCards = () => {
 
     const [groupList, setGroupList] = React.useState<IGrupos[]>([])
-    const [groupSelected, setGroupSelected] = useState<IGrupos>();
-    const [visible, setVisible] = useState(0);
+    const [groupSelected, setGroupSelected] = React.useState<IGrupos>();
+    const [visible, setVisible] = React.useState(0);
 
-    useEffect(() => {
+    React.useEffect(() => {
         const getGrupos = async () => {
             const responseGroups = await getGruposInfo()
             setGroupList(responseGroups)
@@ -41,7 +41,7 @@ const GruposCards = () => {
     return (
         <>
             {groupList.map(item => (
-                <Link key={item.ID} to={`/editGrupo/${item.ID}`}>
+                <Link key={item.ID} to={`/_layouts/15/workbench.aspx/editGroup/${item.ID}`}>
                     <DocumentCard
                         aria-label={'Document Card with image. How to make a good design. ' +
                             'Last modified by Annie Lindqvist and 2 others in March 13, 2018.'}
@@ -74,7 +74,6 @@ const GruposCards = () => {
                         </DocumentCardDetails>
                     </DocumentCard>
                 </Link>
-                /* </Link> */
             ))}
         </>
     )

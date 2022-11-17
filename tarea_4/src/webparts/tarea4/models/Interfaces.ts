@@ -44,3 +44,6 @@ export interface IGrupos {
     Attachments: string;
 }
 
+export interface IFields {
+    Tematica: string;
+}

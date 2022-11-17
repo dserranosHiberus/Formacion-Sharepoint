@@ -1,12 +1,13 @@
 import { getSP } from "../../../pnpjsConfig";
 import { IGrupos } from "../models/Interfaces";
+import { IFields } from "../models/Interfaces";
+
 
 let nameListGrupos = "Grupos de la Unidad X";
 
 export const getGruposInfo = async (): Promise<IGrupos[]> => {
 
-    let _sp = getSP()
-    let gruposCall = await _sp.web.lists.getByTitle(nameListGrupos).items.select("*", "SectorAsociado/Denominacion", "TaxCatchAll/Term").expand("TaxCatchAll", "SectorAsociado")()
+    const gruposCall = await getSP().web.lists.getByTitle(nameListGrupos).items.select("*", "SectorAsociado/Denominacion", "TaxCatchAll/Term").expand("TaxCatchAll", "SectorAsociado")()
     let grupos = gruposCall.map((item) => {
         return {
             ID: item.ID,
@@ -28,4 +29,24 @@ export const getGruposInfo = async (): Promise<IGrupos[]> => {
         }
     });
     return grupos;
+}
+
+
+export const getTematica = async (): Promise<IFields> => {
+
+    const Tematica: IFields = await getSP().web.lists.getByTitle(nameListGrupos).fields.getByInternalNameOrTitle("Tematica")();
+    return Tematica;
+}
+
+
+export const getGroupSelect = async (Id: number): Promise<any> => {
+
+    const grupo = await getSP().web.lists.getByTitle(nameListGrupos).items.getById(Id)()
+
+    console.log('Antes de return', grupo)
+    // let grupos = await getGruposInfo()
+    //     let grupoFiltered = grupos.filter(grupo => grupo.ID = responseIdSelected);
+    return grupo
+
+    // return grupoFiltered
 }
