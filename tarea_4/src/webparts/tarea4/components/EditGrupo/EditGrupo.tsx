@@ -3,9 +3,10 @@ import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import { SPContext } from '../Tarea4';
+import { IGrupos } from '../../models/Interfaces';
+import { getSP } from '../../../../pnpjsConfig';
 
-import { IFields, IGrupos, ITarea4Props } from '../../models/Interfaces';
-
+import { sectoresService } from '../../services/sectoresService';
 import { gruposService } from "../../services/gruposService";
 
 import { TaxonomyPicker, IPickerTerms, UpdateType, UpdateAction, IPickerTerm } from "@pnp/spfx-controls-react/lib/TaxonomyPicker";
@@ -26,7 +27,6 @@ import {
     values
 } from '@fluentui/react';
 
-import { getSP } from '../../../../pnpjsConfig';
 import { selectProperties, textAreaProperties } from 'office-ui-fabric-react';
 
 function EditGrupo() {
@@ -38,35 +38,53 @@ function EditGrupo() {
     const [themes, setThemes] = useState<IDropdownOption[]>([])
 
     const [sector, setSector] = useState<string>()
-    const [dateCreate, setDateCreate] = useState<any>()
-    const [dateFinally, setDateFinally] = useState<any>()
+    const [denomination, setDenomination] = useState<string>()
+    const [description, setDescription] = useState<string>()
+    const [dateCreate, setDateCreate] = useState<Date>()
+    const [dateFinally, setDateFinally] = useState<Date>()
     const [estado, setEstado] = useState<boolean>()
     const [groupType, setGroupType] = useState<string>()
-    const [theme, setTheme] = useState<any>()
+    const [theme, setTheme] = useState<string>()
 
     const IdListGrupos = "f1193dcc-6ec0-44f0-9124-d526430752d0";
+
     const updateItem = async () => {
         try {
-            // const id = document.getElementById('groupId')['value'];
             if (groupId.length > 0) {
+                console.log("Sectores", sectors)
+                console.log("GroupTypes", groupTypes)
+                console.log("themes", themes)
+
+                console.log("Sector create", sector)
+                console.log("Denominacion", denomination)
+                console.log("Descripcion", description)
+                console.log("Date create", dateCreate)
+                console.log("Date Finally", dateFinally)
+                console.log("Estado seleccionado", estado)
+                console.log("GroupType", groupType)
+                console.log("Tematica", theme)
+
                 const itemUpdate = await getSP().web.lists.getById(IdListGrupos).items.getById(parseInt(groupId)).update({
-                    SectorAsociado: (sector),
-                    Denominacion: document.getElementById("denominacion")['value'],
-                    Descripcion: document.getElementById("descripcion")['value'],
-                    FechaDeCreacion: (dateCreate),
-                    FechaDeFinalizacion: (dateFinally),
-                    Estado: (estado),
+                    SectorAsociado: sector,
+                    Denominacion: denomination,
+                    Descripcion: description,
+                    FechaDeCreacion: dateCreate,
+                    FechaDeFinalizacion: dateFinally,
+                    Estado: estado,
                     TipoDeGrupo: groupType,
-                    Tematica: document.getElementById("theme")['value'],
+                    Tematica: theme,
                     // Pais: document.getElementById("country")['value'],
                     // Ciudad: document.getElementById("city")['value'],
                     // Attachments: document.getElementById("ID")['value']
                 });
-                let dato = document.getElementById("denominacion")["value"]
 
+                console.log("Sectores", sectors)
+                console.log("GroupTypes", groupTypes)
                 console.log("themes", themes)
-                console.log("dato", dato)
+
                 console.log("Sector create", sector)
+                console.log("Denominacion", denomination)
+                console.log("Descripcion", description)
                 console.log("Date create", dateCreate)
                 console.log("Date Finally", dateFinally)
                 console.log("Estado seleccionado", estado)
@@ -87,34 +105,30 @@ function EditGrupo() {
 
 
     const context = React.useContext(SPContext)
-    console.log("SPContext", context?.context)
 
     React.useEffect(() => {
         const getGrupo = async () => {
             let callGroupSelected: IGrupos = await gruposService.getGroupSelect(parseInt(groupId))
             setGroupSelected(callGroupSelected)
         }
-
-        // const getSectores = async () => {
-        //     let callSectors: IDropdownOption[] = await gruposService.getSectors()
-        //     setSectors(callSectors)
-        //     console.log("Temas", callSectors)
-        // }
-        // getSectores();
-
+        const getSectores = async () => {
+            let callSectors: IDropdownOption[] = await sectoresService.getSectoresDenominacion()
+            setSectors(callSectors)
+            // console.log("Sectores", callSectors)
+        }
         const getTipoDeGrupos = async () => {
             let callGroupTypes: IDropdownOption[] = await gruposService.getGroupTypes()
             setGroupTypes(callGroupTypes)
-            console.log("Tipo de Grupos", callGroupTypes)
+            // console.log("Tipo de Grupos", callGroupTypes)
         }
-
-
         const getThemes = async () => {
             let callThemes: IDropdownOption[] = await gruposService.getTematica()
             setThemes(callThemes)
-            console.log("Temas", callThemes)
+            // console.log("Temas", callThemes)
         }
+
         getGrupo();
+        getSectores();
         getTipoDeGrupos();
         getThemes();
 
@@ -137,20 +151,6 @@ function EditGrupo() {
         setFirstDayOfWeek(option.key as number);
     }, []);
 
-    const optionsSector: IDropdownOption[] = [
-        { key: 'Header1', text: 'Sector Asociado', itemType: DropdownMenuItemType.Header },
-        { key: 'A', text: 'Option A' },
-
-    ];
-    const optionsGroupType: IDropdownOption[] = [
-        { key: 'Header1', text: 'Tipo de Grupo', itemType: DropdownMenuItemType.Header },
-        { key: 'A', text: 'Option A' },
-    ];
-    // const optionsTematica: any[] = [
-    //     { key: 'Header1', text: 'Tematica', itemType: DropdownMenuItemType.Header },
-    //     { key: 'A', text: 'Option A' },
-    // ];
-
     function onTaxPickerChange(terms: IPickerTerms) {
         console.log("Terms", terms);
     }
@@ -167,8 +167,12 @@ function EditGrupo() {
                         options={sectors}
                         styles={dropdownStyles}
                     />
-                    <TextField id='denominacion' placeholder={groupSelected?.Denominacion} label="Denominación" />
-                    <TextField id='descripcion' placeholder={groupSelected?.Descripcion} label="Descripción" multiline rows={3} />
+                    <TextField id={'denominacion'}
+                        onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => setDenomination(newValue)}
+                        placeholder={groupSelected?.Denominacion} label="Denominación" />
+                    <TextField id={'descripcion'}
+                        onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => setDescription(newValue)}
+                        placeholder={groupSelected?.Descripcion} label="Descripción" multiline rows={3} />
                     <DatePicker
                         id={'createDate'}
                         onSelectDate={(date: Date) => setDateCreate(date)}
@@ -176,7 +180,6 @@ function EditGrupo() {
                         label="Fecha de Creación"
                         firstDayOfWeek={firstDayOfWeek}
                         ariaLabel="Select a date"
-                        // DatePicker uses English strings by default. For localized apps, you must override this prop.
                         strings={defaultDatePickerStrings}
                     />
                     <DatePicker
@@ -186,7 +189,6 @@ function EditGrupo() {
                         label="Fecha de Finalización"
                         firstDayOfWeek={firstDayOfWeek}
                         ariaLabel="Select a date"
-                        // DatePicker uses English strings by default. For localized apps, you must override this prop.
                         strings={defaultDatePickerStrings}
                     />
                 </Stack>
@@ -199,10 +201,10 @@ function EditGrupo() {
                         </Link>
                     </Stack>
 
-                    <Toggle id='estado' label="Estado" onText="Abierto" offText="Cerrado" onChange={
-                        (event: React.MouseEvent<HTMLElement>, checked?: boolean) => setEstado(checked)} />
+                    <Toggle id='estado' label="Estado" onText="Abierto" offText="Cerrado"
+                        onChange={(event: React.MouseEvent<HTMLElement>, checked?: boolean) => setEstado(checked)} />
                     <Dropdown
-                        id='typeGroup'
+                        id={'typeGroup'}
                         onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => setGroupType(option.text)}
                         placeholder={groupSelected?.TipoDeGrupo}
                         label="Tipo de Grupo"
@@ -210,10 +212,10 @@ function EditGrupo() {
                         styles={dropdownStyles}
                     />
                     <Dropdown
-                        id='theme'
+                        id={'theme'}
                         onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => setTheme(option.text)}
                         placeholder={groupSelected?.Tematica}
-                        label="Temática"
+                        label="Tematica"
                         options={themes}
                         styles={dropdownStyles}
                     />

@@ -6,7 +6,7 @@ import { gruposService } from "../../services/gruposService";
 
 import { SPContext } from '../Tarea4';
 
-import { IGrupos, IAtributes } from '../../models/Interfaces';
+import { IGrupos } from '../../models/Interfaces';
 
 import { TaxonomyPicker, IPickerTerms, UpdateType, UpdateAction, IPickerTerm } from "@pnp/spfx-controls-react/lib/TaxonomyPicker";
 
@@ -27,7 +27,7 @@ import {
 import { getSP } from '../../../../pnpjsConfig';
 
 function CreateGrupo() {
-    const [listValue, setListValue] = React.useState<IAtributes[]>([])
+    const [listValue, setListValue] = React.useState<[]>([])
 
     const context = React.useContext(SPContext)
     console.log("SPContext", context?.context)

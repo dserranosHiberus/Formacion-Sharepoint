@@ -54,12 +54,3 @@ export interface IFormFieds {
     StateValue: string;
 }
 
-export interface IFields {
-    key: string;
-    text: string;
-}
-
-export interface IAtributes {
-    id: any;
-    value: any
-} 

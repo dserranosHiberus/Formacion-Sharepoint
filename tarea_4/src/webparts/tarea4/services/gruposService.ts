@@ -1,8 +1,7 @@
 import { getSP } from "../../../pnpjsConfig";
-import { IGrupos, IFields } from "../models/Interfaces";
+import { IGrupos } from "../models/Interfaces";
 import CreateGrupo from "../components/CreateGroup/CreateGroup";
 import { IDropdownOption, themeRulesStandardCreator } from "@fluentui/react";
-import { result } from "lodash";
 
 const nameListGrupos = "Grupos de la Unidad X";
 const IdListGrupos = "f1193dcc-6ec0-44f0-9124-d526430752d0";
@@ -22,8 +21,10 @@ const getGruposInfo = async (): Promise<IGrupos[]> => {
         SectorAsociado: item.SectorAsociado.Denominacion,
         Denominacion: item.Denominacion,
         Descripcion: item.Descripcion,
-        FechaDeCreacion: new Date(item.FechaDeCreacion).toLocaleDateString('es-ES'),
-        FechaDeFinalizacion: new Date(item.FechaDeFinalizacion).toLocaleDateString('es-ES'),
+        // FechaDeCreacion: new Date(item.FechaDeCreacion).toLocaleDateString('es-ES'),
+        // FechaDeFinalizacion: new Date(item.FechaDeFinalizacion).toLocaleDateString('es-ES'),
+        FechaDeCreacion: item.FechaDeCreacion,
+        FechaDeFinalizacion: item.FechaDeFinalizacion,
         Ambito: item.TaxCatchAll[2].Term,
         TipoDeGrupo: item.TipoDeGrupo,
         Tematica: item.Tematica,
@@ -52,8 +53,10 @@ const getGroupSelect = async (Id: number): Promise<IGrupos> => {
         SectorAsociado: CallGroupSelected.SectorAsociado.Denominacion,
         Denominacion: CallGroupSelected.Denominacion,
         Descripcion: CallGroupSelected.Descripcion,
-        FechaDeCreacion: new Date(CallGroupSelected.FechaDeCreacion).toLocaleDateString('es-ES'),
-        FechaDeFinalizacion: new Date(CallGroupSelected.FechaDeFinalizacion).toLocaleDateString('es-ES'),
+        // FechaDeCreacion: new Date(CallGroupSelected.FechaDeCreacion).toLocaleDateString('es-ES'),
+        // FechaDeFinalizacion: new Date(CallGroupSelected.FechaDeFinalizacion).toLocaleDateString('es-ES'),
+        FechaDeCreacion: CallGroupSelected.FechaDeCreacion,
+        FechaDeFinalizacion: CallGroupSelected.FechaDeFinalizacion,
         Ambito: CallGroupSelected.TaxCatchAll[2].Term,
         TipoDeGrupo: CallGroupSelected.TipoDeGrupo,
         Tematica: CallGroupSelected.Tematica,
@@ -64,7 +67,7 @@ const getGroupSelect = async (Id: number): Promise<IGrupos> => {
         Ciudad: CallGroupSelected.TaxCatchAll[0].Term,
         Attachments: CallGroupSelected.Attachments
     }
-    // console.log("Despues del return", grupo)
+    // console.log("Grupo seleccionado", grupo)
     return grupo;
 };
 
@@ -118,17 +121,6 @@ const getGroupSelect = async (Id: number): Promise<IGrupos> => {
 //     ];
 // }
 
-// *****CONSULTA DE SECTORES ASOCIADOS*****
-const getSectors = async (): Promise<IDropdownOption[]> => {
-    const sector: any = await getSP().web.lists.getByTitle(nameListGrupos).fields.getByInternalNameOrTitle("SectorAsociado")
-        // .select("Choices")
-        ()
-    console.log('Sector', sector)
-    return sector.Choices.map((item: string) => ({
-        key: item,
-        text: item
-    }));
-}
 
 // *****CONSULTA DE TIPOS DE GRUPOS*****
 const getGroupTypes = async (): Promise<IDropdownOption[]> => {
@@ -154,7 +146,6 @@ const getTematica = async (): Promise<IDropdownOption[]> => {
 export const gruposService = {
     getGruposInfo,
     getGroupSelect,
-    getSectors,
     getGroupTypes,
     getTematica,
     // CreateGroup
