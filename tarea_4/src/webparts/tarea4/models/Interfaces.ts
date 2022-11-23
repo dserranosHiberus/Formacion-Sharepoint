@@ -44,6 +44,22 @@ export interface IGrupos {
     Attachments: string;
 }
 
-export interface IFields {
-    Tematica: string;
+export interface IFormFieds {
+    sectorValue: number;
+    sectorValueString: string;
+    DenominationValue: string;
+    DescriptionValue: string;
+    CreateDateValue: string;
+    FinalDateValue: string;
+    StateValue: string;
 }
+
+export interface IFields {
+    key: string;
+    text: string;
+}
+
+export interface IAtributes {
+    id: any;
+    value: any
+} 
