@@ -25,9 +25,15 @@ export interface ISectores {
     URLGrupoUsuariosSector: string;
 }
 
+export interface ISectorId {
+    ID: string;
+    Denominacion: string;
+}
+
 export interface IGrupos {
     ID: number;
     SectorAsociado: string;
+    SectorAsociadoId: number;
     Denominacion: string;
     Descripcion: string;
     FechaDeCreacion: string;
@@ -44,13 +50,13 @@ export interface IGrupos {
     // AmbitoGeografico: string;
 }
 
-export interface IFormFieds {
+export interface IFormFields {
     sectorValue: number;
     sectorValueString: string;
     DenominationValue: string;
     DescriptionValue: string;
     CreateDateValue: string;
-    FinalDateValue: string;
+    FinallyDateValue: string;
     StateValue: string;
 }
 

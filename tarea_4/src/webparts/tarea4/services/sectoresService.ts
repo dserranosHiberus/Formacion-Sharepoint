@@ -1,6 +1,6 @@
 import { IDropdownOption } from "@fluentui/react";
 import { getSP } from "../../../pnpjsConfig";
-import { ISectores } from "../models/Interfaces";
+import { ISectores, ISectorId } from "../models/Interfaces";
 
 const nameListGrupos = "SectoresUnidades";
 const IdListSectores = "988b9d7c-a505-4396-ad62-61ab21b28f62";
@@ -34,13 +34,11 @@ const getSectoresInfo = async (): Promise<ISectores[]> => {
 }
 
 // *****CONSULTA DE SECTORES ASOCIADOS*****
-const getSectoresDenominacion = async (): Promise<IDropdownOption[]> => {
-
+const getSectorDenomination = async (): Promise<IDropdownOption[]> => {
     let sectoresDenominacion: any = await getSectoresArray()
-    return sectoresDenominacion.map((item: { Denominacion: any; }) => ({
-        key: item.Denominacion,
+    return sectoresDenominacion.map((item: ISectorId) => ({
+        key: item.ID,
         text: item.Denominacion
-
     }))
 }
 
@@ -48,5 +46,5 @@ const getSectoresDenominacion = async (): Promise<IDropdownOption[]> => {
 export const sectoresService = {
     getSectoresArray,
     getSectoresInfo,
-    getSectoresDenominacion
+    getSectorDenomination
 }

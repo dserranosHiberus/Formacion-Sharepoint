@@ -7,7 +7,7 @@ const nameListGrupos = "Grupos de la Unidad X";
 const IdListGrupos = "f1193dcc-6ec0-44f0-9124-d526430752d0";
 
 // *****CONSULTA DE TODOS LOS GRUPOS*****
-const getGruposInfo = async (): Promise<IGrupos[]> => {
+const readGroups = async (): Promise<IGrupos[]> => {
 
     const gruposCall = await getSP()
         .web.lists.getById(IdListGrupos)
@@ -19,6 +19,7 @@ const getGruposInfo = async (): Promise<IGrupos[]> => {
         ID: item.ID,
         CodigoDeGrupo: item.CodigoDeGrupo,
         SectorAsociado: item.SectorAsociado.Denominacion,
+        SectorAsociadoId: item.SectorAsociadoId,
         Denominacion: item.Denominacion,
         Descripcion: item.Descripcion,
         FechaDeCreacion: new Date(item.FechaDeCreacion).toDateString(),
@@ -34,7 +35,7 @@ const getGruposInfo = async (): Promise<IGrupos[]> => {
 }
 
 // *****CONSULTA DEL GRUPO SELECCIONADO*****
-const getGroupSelect = async (Id: number): Promise<IGrupos> => {
+const readGroupSelect = async (Id: number): Promise<IGrupos> => {
 
     const CallGroupSelected = await getSP()
         .web.lists.getByTitle(nameListGrupos)
@@ -46,6 +47,7 @@ const getGroupSelect = async (Id: number): Promise<IGrupos> => {
     const grupo: IGrupos = {
         ID: CallGroupSelected.ID,
         SectorAsociado: CallGroupSelected.SectorAsociado.Denominacion,
+        SectorAsociadoId: CallGroupSelected.SectorAsociadoId,
         Denominacion: CallGroupSelected.Denominacion,
         Descripcion: CallGroupSelected.Descripcion,
         FechaDeCreacion: new Date(CallGroupSelected.FechaDeCreacion).toDateString(),
@@ -63,7 +65,7 @@ const getGroupSelect = async (Id: number): Promise<IGrupos> => {
 };
 
 // *****CREACCION DE NUEVO GRUPO*****
-// const CreateGroup = async () => {
+// const createGroup = async () => {
 //     try {
 //         const addGroup = await getSP()
 //             .web.lists.getByTitle(nameListGrupos)
@@ -91,7 +93,7 @@ const getGroupSelect = async (Id: number): Promise<IGrupos> => {
 // }
 
 // *****EDICION DE UN GRUPO SELECCIONADO*****
-// const EditGroup = async () => {
+// const updateGroup = async () => {
 //     const editGroup = await getSP().web.lists.getById(IdListGrupos).items.getById(id).validateUpdateListItem(sysUpdateData)
 //     const sysUpdateData = [
 //         { FieldName: 'Title', FieldValue: grupo.denominacion },
@@ -112,6 +114,25 @@ const getGroupSelect = async (Id: number): Promise<IGrupos> => {
 //     ];
 // }
 
+// *****BORRADO DEL GRUPO SELECCIONADO*****
+const deleteGroup = async (Id: number) => {
+    let option: boolean = window.confirm("Seguro que quieres eliminar el Grupo???")
+    if (option === true) {
+        const deleteItem = async () => {
+            let deleteItem = await getSP().web.lists.getById(IdListGrupos).items.getById(Id).delete();
+            console.log("Datos del borrado", deleteItem);
+            alert(`El grupo: ${Id} se ha borrado correctamente!`);
+            setTimeout(() => {
+                window.location.href = '/_layouts/15/workbench.aspx/'
+            }, 2000)
+        }
+        deleteItem()
+    }
+    else {
+        console.log("Borrado cancelado")
+        alert("Se ha cancelado el borrado")
+    }
+}
 
 // *****CONSULTA DE TIPOS DE GRUPOS*****
 const getGroupTypes = async (): Promise<IDropdownOption[]> => {
@@ -124,7 +145,7 @@ const getGroupTypes = async (): Promise<IDropdownOption[]> => {
 }
 
 // *****CONSULTA DE TEMATICAS*****
-const getTematica = async (): Promise<IDropdownOption[]> => {
+const getThematic = async (): Promise<IDropdownOption[]> => {
     const theme: any = await getSP().web.lists.getByTitle(nameListGrupos).fields.getByInternalNameOrTitle("Tematica").select("Choices")()
     // console.log('Themes', theme)
     return theme.Choices.map((item: string) => ({
@@ -135,10 +156,12 @@ const getTematica = async (): Promise<IDropdownOption[]> => {
 
 // *****EXPORTACIONES DE FUNCIONES*****
 export const gruposService = {
-    getGruposInfo,
-    getGroupSelect,
+    // createGroup
+    readGroups,
+    readGroupSelect,
+    // updateGroup,
+    deleteGroup,
     getGroupTypes,
-    getTematica,
-    // CreateGroup
+    getThematic,
 }
 

@@ -22,7 +22,7 @@ const GruposCards = () => {
 
     React.useEffect(() => {
         const getGrupos = async () => {
-            const responseGroups = await gruposService.getGruposInfo()
+            const responseGroups = await gruposService.readGroups()
             setGroupList(responseGroups)
         }
         getGrupos()
@@ -54,6 +54,7 @@ const GruposCards = () => {
                             style={{ boxShadow: theme.effects.elevation16, margin: 10 }}>
 
                             <DocumentCardDetails>
+                                <p>{item.ID}</p>
                                 <DocumentCardTitle
                                     title={item.SectorAsociado}
                                     shouldTruncate

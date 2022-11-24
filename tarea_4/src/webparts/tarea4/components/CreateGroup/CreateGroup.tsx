@@ -36,7 +36,7 @@ function CreateGrupo() {
     const [groupTypes, setGroupTypes] = useState<IDropdownOption[]>([])
     const [themes, setThemes] = useState<IDropdownOption[]>([])
 
-    const [sector, setSector] = useState<string>()
+    const [sector, setSector] = useState<number>()
     const [denomination, setDenomination] = useState<string>()
     const [description, setDescription] = useState<string>()
     const [dateCreate, setDateCreate] = useState<Date>()
@@ -45,6 +45,8 @@ function CreateGrupo() {
     const [groupType, setGroupType] = useState<string>()
     const [theme, setTheme] = useState<string>()
 
+    const [formField, getFormFields] = useState<IGrupos>()
+
     const IdListGrupos = "f1193dcc-6ec0-44f0-9124-d526430752d0";
 
     const addItem = async () => {
@@ -52,7 +54,7 @@ function CreateGrupo() {
             const addGroup = await getSP()
                 .web.lists.getById(IdListGrupos)
                 .items.add({
-                    SectorAsociado: sector,
+                    SectorAsociadoId: sector,
                     Denominacion: denomination,
                     Descripcion: description,
                     FechaDeCreacion: dateCreate,
@@ -89,24 +91,24 @@ function CreateGrupo() {
     const context = React.useContext(SPContext)
 
     React.useEffect(() => {
-        const getSectores = async () => {
-            let callSectors: IDropdownOption[] = await sectoresService.getSectoresDenominacion()
+        const getAssociatedSector = async () => {
+            let callSectors: IDropdownOption[] = await sectoresService.getSectorDenomination()
             setSectors(callSectors)
             // console.log("Sectores", callSectors)
         }
-        const getTipoDeGrupos = async () => {
+        const getTypesOfGroups = async () => {
             let callGroupTypes: IDropdownOption[] = await gruposService.getGroupTypes()
             setGroupTypes(callGroupTypes)
             // console.log("Tipo de Grupos", callGroupTypes)
         }
         const getThemes = async () => {
-            let callThemes: IDropdownOption[] = await gruposService.getTematica()
+            let callThemes: IDropdownOption[] = await gruposService.getThematic()
             setThemes(callThemes)
             // console.log("Temas", callThemes)
         }
 
-        getSectores();
-        getTipoDeGrupos();
+        getAssociatedSector();
+        getTypesOfGroups();
         getThemes();
 
     }, [])
@@ -137,7 +139,7 @@ function CreateGrupo() {
             <Stack horizontal tokens={stackTokens} styles={stackStyles}>
                 <Stack {...columnProps}>
                     <Dropdown
-                        onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => setSector(option.text)}
+                        onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => setSector(option.key)}
                         label="Sector"
                         options={sectors}
                         styles={dropdownStyles}
@@ -158,7 +160,6 @@ function CreateGrupo() {
                         strings={defaultDatePickerStrings}
                     />
                     <DatePicker
-
                         onSelectDate={(date: Date) => setDateFinally(date)}
                         placeholder={groupSelected?.FechaDeFinalizacion}
                         label="Fecha de Finalización"
@@ -170,7 +171,7 @@ function CreateGrupo() {
 
                 <Stack {...columnProps}>
                     <Stack horizontal horizontalAlign={'end'} {...columnProps}>
-                        <PrimaryButton style={{ maxWidth: "100px" }} text="Modificar Datos" onClick={() => addItem()} allowDisabledFocus />
+                        <PrimaryButton style={{ maxWidth: "100px" }} text="Crear Datos" onClick={() => addItem()} allowDisabledFocus />
                         <Link to={'/_layouts/15/workbench.aspx/'} >
                             <PrimaryButton style={{ maxWidth: "100px" }} text="Volver" allowDisabledFocus />
                         </Link>

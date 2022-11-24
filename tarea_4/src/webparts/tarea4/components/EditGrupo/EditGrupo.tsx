@@ -31,13 +31,15 @@ import { selectProperties, textAreaProperties } from 'office-ui-fabric-react';
 
 function EditGrupo() {
 
+    const context = React.useContext(SPContext)
+
     const { groupId } = useParams()
     const [groupSelected, setGroupSelected] = useState<IGrupos>()
     const [sectors, setSectors] = useState<IDropdownOption[]>([])
     const [groupTypes, setGroupTypes] = useState<IDropdownOption[]>([])
     const [themes, setThemes] = useState<IDropdownOption[]>([])
 
-    const [sector, setSector] = useState<string>()
+    const [sector, setSector] = useState<string | number>()
     const [denomination, setDenomination] = useState<string>()
     const [description, setDescription] = useState<string>()
     const [dateCreate, setDateCreate] = useState<Date>()
@@ -64,19 +66,22 @@ function EditGrupo() {
                 console.log("GroupType", groupType)
                 console.log("Tematica", theme)
 
-                const itemUpdate = await getSP().web.lists.getById(IdListGrupos).items.getById(parseInt(groupId)).update({
-                    SectorAsociado: sector,
-                    Denominacion: denomination,
-                    Descripcion: description,
-                    FechaDeCreacion: dateCreate,
-                    FechaDeFinalizacion: dateFinally,
-                    Estado: estado,
-                    TipoDeGrupo: groupType,
-                    Tematica: theme,
-                    // Pais: document.getElementById("country")['value'],
-                    // Ciudad: document.getElementById("city")['value'],
-                    // Attachments: document.getElementById("ID")['value']
-                });
+                const itemUpdate = await getSP()
+                    .web.lists.getById(IdListGrupos)
+                    .items.getById(parseInt(groupId))
+                    .update({
+                        SectorAsociadoId: sector,
+                        Denominacion: denomination,
+                        Descripcion: description,
+                        FechaDeCreacion: dateCreate,
+                        FechaDeFinalizacion: dateFinally,
+                        Estado: estado,
+                        TipoDeGrupo: groupType,
+                        Tematica: theme,
+                        // Pais: document.getElementById("country")['value'],
+                        // Ciudad: document.getElementById("city")['value'],
+                        // Attachments: document.getElementById("ID")['value']
+                    });
 
                 console.log("Sectores", sectors)
                 console.log("GroupTypes", groupTypes)
@@ -103,16 +108,13 @@ function EditGrupo() {
         }
     }
 
-
-    const context = React.useContext(SPContext)
-
     React.useEffect(() => {
         const getGrupo = async () => {
-            let callGroupSelected: IGrupos = await gruposService.getGroupSelect(parseInt(groupId))
+            let callGroupSelected: IGrupos = await gruposService.readGroupSelect(parseInt(groupId))
             setGroupSelected(callGroupSelected)
         }
         const getSectores = async () => {
-            let callSectors: IDropdownOption[] = await sectoresService.getSectoresDenominacion()
+            let callSectors: IDropdownOption[] = await sectoresService.getSectorDenomination()
             setSectors(callSectors)
             // console.log("Sectores", callSectors)
         }
@@ -122,7 +124,7 @@ function EditGrupo() {
             // console.log("Tipo de Grupos", callGroupTypes)
         }
         const getThemes = async () => {
-            let callThemes: IDropdownOption[] = await gruposService.getTematica()
+            let callThemes: IDropdownOption[] = await gruposService.getThematic()
             setThemes(callThemes)
             // console.log("Temas", callThemes)
         }
@@ -160,7 +162,7 @@ function EditGrupo() {
             <Stack horizontal tokens={stackTokens} styles={stackStyles}>
                 <Stack {...columnProps}>
                     <Dropdown
-                        onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => setSector(option.text)}
+                        onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => setSector(option.key)}
                         placeholder={groupSelected?.SectorAsociado}
                         label="Sector"
                         options={sectors}
@@ -194,6 +196,7 @@ function EditGrupo() {
                 <Stack {...columnProps}>
                     <Stack horizontal horizontalAlign={'end'} {...columnProps}>
                         <PrimaryButton style={{ maxWidth: "100px" }} text="Modificar Datos" onClick={() => updateItem()} allowDisabledFocus />
+                        <PrimaryButton style={{ maxWidth: "100px" }} text="Borrar Grupo" onClick={() => gruposService.deleteGroup(parseInt(groupId))} allowDisabledFocus />
                         <Link to={'/_layouts/15/workbench.aspx/'} >
                             <PrimaryButton style={{ maxWidth: "100px" }} text="Volver" allowDisabledFocus />
                         </Link>
@@ -248,5 +251,4 @@ function EditGrupo() {
     );
 };
 export default EditGrupo;
-
 
