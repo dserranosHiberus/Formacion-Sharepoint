@@ -2,11 +2,12 @@ import * as React from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { gruposService } from "../../services/gruposService";
-
 import { SPContext } from '../Tarea4';
-
 import { IGrupos } from '../../models/Interfaces';
+import { getSP } from '../../../../pnpjsConfig';
+
+import { sectoresService } from '../../services/sectoresService';
+import { gruposService } from "../../services/gruposService";
 
 import { TaxonomyPicker, IPickerTerms, UpdateType, UpdateAction, IPickerTerm } from "@pnp/spfx-controls-react/lib/TaxonomyPicker";
 
@@ -23,14 +24,92 @@ import {
     IDropdownOption,
     IDropdownStyles,
     defaultDatePickerStrings,
+    values
 } from '@fluentui/react';
-import { getSP } from '../../../../pnpjsConfig';
+
+import { selectProperties, textAreaProperties } from 'office-ui-fabric-react';
 
 function CreateGrupo() {
-    const [listValue, setListValue] = React.useState<[]>([])
+
+    const [groupSelected, setGroupSelected] = useState<IGrupos>()
+    const [sectors, setSectors] = useState<IDropdownOption[]>([])
+    const [groupTypes, setGroupTypes] = useState<IDropdownOption[]>([])
+    const [themes, setThemes] = useState<IDropdownOption[]>([])
+
+    const [sector, setSector] = useState<string>()
+    const [denomination, setDenomination] = useState<string>()
+    const [description, setDescription] = useState<string>()
+    const [dateCreate, setDateCreate] = useState<Date>()
+    const [dateFinally, setDateFinally] = useState<Date>()
+    const [estado, setEstado] = useState<boolean>()
+    const [groupType, setGroupType] = useState<string>()
+    const [theme, setTheme] = useState<string>()
+
+    const IdListGrupos = "f1193dcc-6ec0-44f0-9124-d526430752d0";
+
+    const addItem = async () => {
+        try {
+            const addGroup = await getSP()
+                .web.lists.getById(IdListGrupos)
+                .items.add({
+                    SectorAsociado: sector,
+                    Denominacion: denomination,
+                    Descripcion: description,
+                    FechaDeCreacion: dateCreate,
+                    FechaDeFinalizacion: dateFinally,
+                    Estado: estado,
+                    TipoDeGrupo: groupType,
+                    Tematica: theme,
+                    // Pais: document.getElementById("country")['value'],
+                    // Ciudad: document.getElementById("city")['value'],
+                    // Attachments: document.getElementById("ID")['value']
+                });
+
+            console.log("addGroup creado", addGroup)
+
+            console.log("Sectores", sectors)
+            console.log("GroupTypes", groupTypes)
+            console.log("themes", themes)
+
+            console.log("Sector create", sector)
+            console.log("Denominacion", denomination)
+            console.log("Descripcion", description)
+            console.log("Date create", dateCreate)
+            console.log("Date Finally", dateFinally)
+            console.log("Estado seleccionado", estado)
+            console.log("GroupType", groupType)
+            console.log("Tematica", theme)
+        }
+        catch (e) {
+            console.error("Error al crear el grupo", e);
+        }
+    }
+
 
     const context = React.useContext(SPContext)
-    console.log("SPContext", context?.context)
+
+    React.useEffect(() => {
+        const getSectores = async () => {
+            let callSectors: IDropdownOption[] = await sectoresService.getSectoresDenominacion()
+            setSectors(callSectors)
+            // console.log("Sectores", callSectors)
+        }
+        const getTipoDeGrupos = async () => {
+            let callGroupTypes: IDropdownOption[] = await gruposService.getGroupTypes()
+            setGroupTypes(callGroupTypes)
+            // console.log("Tipo de Grupos", callGroupTypes)
+        }
+        const getThemes = async () => {
+            let callThemes: IDropdownOption[] = await gruposService.getTematica()
+            setThemes(callThemes)
+            // console.log("Temas", callThemes)
+        }
+
+        getSectores();
+        getTipoDeGrupos();
+        getThemes();
+
+    }, [])
 
     const stackTokens = { childrenGap: 50 };
     const stackStyles: Partial<IStackStyles> = { root: { width: 650 } };
@@ -45,120 +124,75 @@ function CreateGrupo() {
         dropdown: { width: 300 },
     };
 
-    // function saveValue(id, value) {
-    //     let datos = { id, value }
-    //     setListValue(datos)
-    // }
-
-    async function handleCreate() {
-        const nameListGrupos = "Grupos de la Unidad X";
-        const IdListGrupos = "f1193dcc-6ec0-44f0-9124-d526430752d0";
-        const addGroup = await getSP()
-            .web.lists.getById(IdListGrupos)
-            .items.add({
-                SectorAsociado: document.getElementById("sector")['value'],
-                Denominacion: document.getElementById("denominacion")['value'],
-                Descripcion: document.getElementById("descripcion")['value'],
-                // FechaDeCreacion: new Date(document.getElementById("createDate")['value'],),
-                // FechaDeFinalizacion: new Date(document.getElementById("finallyDate")['value'],),
-                // Ambito: document.getElementById("ID")['value'],
-                Tematica: document.getElementById("theme")['value'],
-                Estado: document.getElementById("estado")['value'],
-                // Pais: document.getElementById("country")['value'],
-                // Ciudad: document.getElementById("city")['value'],
-                // Attachments: document.getElementById("ID")['value']
-            });
-        console.log("addGroup creado", addGroup)
-
-
-        // const createGrupo = async () => {
-        //     await gruposService.CreateGroup()
-        // }
-        // createGrupo();
-        // console.log("Grupo Creado")
-    }
-
     const onDropdownChange = React.useCallback((event: React.FormEvent<HTMLDivElement>, option: IDropdownOption) => {
         setFirstDayOfWeek(option.key as number);
     }, []);
-
-    const optionsSector: IDropdownOption[] = [
-        { key: 'Header1', text: 'Sector Asociado', itemType: DropdownMenuItemType.Header },
-        { key: 'A', text: 'Option A' },
-
-    ];
-    const optionsGroupType: IDropdownOption[] = [
-        { key: 'Header1', text: 'Tipo de Grupo', itemType: DropdownMenuItemType.Header },
-        { key: 'A', text: 'Option A' },
-    ];
-    const optionsTematica: any[] = [
-        { key: 'Header1', text: 'Tematica', itemType: DropdownMenuItemType.Header },
-        { key: 'A', text: 'Option A' },
-    ];
 
     function onTaxPickerChange(terms: IPickerTerms) {
         console.log("Terms", terms);
     }
 
     return (
-
         <>
             <Stack horizontal tokens={stackTokens} styles={stackStyles}>
                 <Stack {...columnProps}>
                     <Dropdown
-                        id='sector'
-                        onChange={(_, id, value) => {
-                            // handleCreate()
-                            // saveValue(id, value)
-                            console.log("Sector", id, value)
-                        }}
-                        label="Sector Asociado"
-                        options={optionsSector}
+                        onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => setSector(option.text)}
+                        label="Sector"
+                        options={sectors}
                         styles={dropdownStyles}
                     />
-                    <TextField id='denominacion' label="Denominación" />
-                    <TextField id='descripcion' label="Descripción" multiline rows={3} />
+                    <TextField id={'denominacion'}
+                        onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => setDenomination(newValue)}
+                        placeholder={groupSelected?.Denominacion} label="Denominación" />
+                    <TextField id={'descripcion'}
+                        onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => setDescription(newValue)}
+                        placeholder={groupSelected?.Descripcion} label="Descripción" multiline rows={3} />
                     <DatePicker
-                        id='createDate'
+                        id={'createDate'}
+                        onSelectDate={(date: Date) => setDateCreate(date)}
+                        placeholder={groupSelected?.FechaDeCreacion}
                         label="Fecha de Creación"
                         firstDayOfWeek={firstDayOfWeek}
                         ariaLabel="Select a date"
-                        // DatePicker uses English strings by default. For localized apps, you must override this prop.
                         strings={defaultDatePickerStrings}
                     />
                     <DatePicker
-                        id='finallyDate'
+
+                        onSelectDate={(date: Date) => setDateFinally(date)}
+                        placeholder={groupSelected?.FechaDeFinalizacion}
                         label="Fecha de Finalización"
                         firstDayOfWeek={firstDayOfWeek}
                         ariaLabel="Select a date"
-                        // DatePicker uses English strings by default. For localized apps, you must override this prop.
                         strings={defaultDatePickerStrings}
                     />
                 </Stack>
 
                 <Stack {...columnProps}>
                     <Stack horizontal horizontalAlign={'end'} {...columnProps}>
-                        <PrimaryButton style={{ maxWidth: "100px" }} text="Crear Grupo" onClick={() => handleCreate()} allowDisabledFocus />
+                        <PrimaryButton style={{ maxWidth: "100px" }} text="Modificar Datos" onClick={() => addItem()} allowDisabledFocus />
                         <Link to={'/_layouts/15/workbench.aspx/'} >
                             <PrimaryButton style={{ maxWidth: "100px" }} text="Volver" allowDisabledFocus />
                         </Link>
                     </Stack>
-                    <Toggle id='estado' label="Estado" defaultChecked onText="Abierto" offText="Cerrado" onChange={() => alert("Cambio de estado")} />
+
+                    <Toggle id='estado' label="Estado" onText="Abierto" offText="Cerrado"
+                        onChange={(event: React.MouseEvent<HTMLElement>, checked?: boolean) => setEstado(checked)} />
                     <Dropdown
-                        id='typeGroup'
+                        onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => setGroupType(option.text)}
                         label="Tipo de Grupo"
-                        options={optionsGroupType}
+                        options={groupTypes}
                         styles={dropdownStyles}
                     />
                     <Dropdown
-                        id='theme'
-                        label="Temática"
-                        options={optionsTematica}
+                        onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => setTheme(option.text)}
+                        label="Tematica"
+                        options={themes}
                         styles={dropdownStyles}
                     />
                     {/* <TaxonomyPicker allowMultipleSelections={true}
-                         id='ambito' 
-                         termsetNameOrID="Ambito"
+                        id='ambito'
+                        termsetNameOrID="Ambito"
                         panelTitle="Selecciona un ambito"
                         label="Ambito"
                         onChange={onTaxPickerChange}
@@ -166,8 +200,8 @@ function CreateGrupo() {
                         isTermSetSelectable={false}
                     /> */}
                     {/* <TaxonomyPicker allowMultipleSelections={false}
-                          id='country' 
-                          termsetNameOrID="Pais"
+                        id='country' 
+                        termsetNameOrID="Pais"
                         panelTitle="Selecciona un país"
                         label="Pais"
                         onChange={onTaxPickerChange}
@@ -175,8 +209,8 @@ function CreateGrupo() {
                         isTermSetSelectable={false}
                     /> */}
                     {/* <TaxonomyPicker allowMultipleSelections={false}
-                         id='city'  
-                         termsetNameOrID="Ciudad"
+                        id='city'  
+                        termsetNameOrID="Ciudad"
                         panelTitle="Selecciona una Ciudad"
                         label="Ciudad"
                         onChange={onTaxPickerChange}

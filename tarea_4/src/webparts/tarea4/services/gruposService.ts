@@ -13,7 +13,7 @@ const getGruposInfo = async (): Promise<IGrupos[]> => {
         .web.lists.getById(IdListGrupos)
         .items.select("*", "SectorAsociado/Denominacion", "TaxCatchAll/Term")
         .expand("TaxCatchAll", "SectorAsociado")()
-
+    console.log(gruposCall)
     return gruposCall.map((item) => ({
 
         ID: item.ID,
@@ -21,19 +21,15 @@ const getGruposInfo = async (): Promise<IGrupos[]> => {
         SectorAsociado: item.SectorAsociado.Denominacion,
         Denominacion: item.Denominacion,
         Descripcion: item.Descripcion,
-        // FechaDeCreacion: new Date(item.FechaDeCreacion).toLocaleDateString('es-ES'),
-        // FechaDeFinalizacion: new Date(item.FechaDeFinalizacion).toLocaleDateString('es-ES'),
-        FechaDeCreacion: item.FechaDeCreacion,
-        FechaDeFinalizacion: item.FechaDeFinalizacion,
-        Ambito: item.TaxCatchAll[2].Term,
+        FechaDeCreacion: new Date(item.FechaDeCreacion).toDateString(),
+        FechaDeFinalizacion: new Date(item.FechaDeFinalizacion).toDateString(),
+        Estado: item.Estado,
         TipoDeGrupo: item.TipoDeGrupo,
         Tematica: item.Tematica,
-        AmbitoGeografico: item.AmbitoGeografico,
-        AmbitoOrganizativoInternacional: item.AmbitoOrganizativoInternacional,
-        Estado: item.Estado,
-        Pais: item.TaxCatchAll[1].Term,
-        Ciudad: item.TaxCatchAll[0].Term,
-        Attachments: item.Attachments
+        // Ambito: item.TaxCatchAll[2].Term,
+        // Pais: item.TaxCatchAll[1].Term,
+        // Ciudad: item.TaxCatchAll[0].Term,
+        // Attachments: item.Attachments
     }));
 }
 
@@ -49,23 +45,18 @@ const getGroupSelect = async (Id: number): Promise<IGrupos> => {
     // console.log("Antes del return", CallGroupSelected)
     const grupo: IGrupos = {
         ID: CallGroupSelected.ID,
-        CodigoDeGrupo: CallGroupSelected.CodigoDeGrupo,
         SectorAsociado: CallGroupSelected.SectorAsociado.Denominacion,
         Denominacion: CallGroupSelected.Denominacion,
         Descripcion: CallGroupSelected.Descripcion,
-        // FechaDeCreacion: new Date(CallGroupSelected.FechaDeCreacion).toLocaleDateString('es-ES'),
-        // FechaDeFinalizacion: new Date(CallGroupSelected.FechaDeFinalizacion).toLocaleDateString('es-ES'),
-        FechaDeCreacion: CallGroupSelected.FechaDeCreacion,
-        FechaDeFinalizacion: CallGroupSelected.FechaDeFinalizacion,
-        Ambito: CallGroupSelected.TaxCatchAll[2].Term,
+        FechaDeCreacion: new Date(CallGroupSelected.FechaDeCreacion).toDateString(),
+        FechaDeFinalizacion: new Date(CallGroupSelected.FechaDeFinalizacion).toDateString(),
         TipoDeGrupo: CallGroupSelected.TipoDeGrupo,
         Tematica: CallGroupSelected.Tematica,
-        AmbitoGeografico: CallGroupSelected.AmbitoGeografico,
-        AmbitoOrganizativoInternacional: CallGroupSelected.AmbitoOrganizativoInternacional,
         Estado: CallGroupSelected.Estado,
-        Pais: CallGroupSelected.TaxCatchAll[1].Term,
-        Ciudad: CallGroupSelected.TaxCatchAll[0].Term,
-        Attachments: CallGroupSelected.Attachments
+        // Ambito: CallGroupSelected.TaxCatchAll[2].Term,
+        // Pais: CallGroupSelected.TaxCatchAll[1].Term,
+        // Ciudad: CallGroupSelected.TaxCatchAll[0].Term,
+        // Attachments: CallGroupSelected.Attachments
     }
     // console.log("Grupo seleccionado", grupo)
     return grupo;

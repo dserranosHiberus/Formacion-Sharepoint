@@ -160,7 +160,6 @@ function EditGrupo() {
             <Stack horizontal tokens={stackTokens} styles={stackStyles}>
                 <Stack {...columnProps}>
                     <Dropdown
-                        id={'sector'}
                         onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => setSector(option.text)}
                         placeholder={groupSelected?.SectorAsociado}
                         label="Sector"
@@ -183,7 +182,6 @@ function EditGrupo() {
                         strings={defaultDatePickerStrings}
                     />
                     <DatePicker
-                        id={'finallyDate'}
                         onSelectDate={(date: Date) => setDateFinally(date)}
                         placeholder={groupSelected?.FechaDeFinalizacion}
                         label="Fecha de Finalización"
@@ -204,7 +202,6 @@ function EditGrupo() {
                     <Toggle id='estado' label="Estado" onText="Abierto" offText="Cerrado"
                         onChange={(event: React.MouseEvent<HTMLElement>, checked?: boolean) => setEstado(checked)} />
                     <Dropdown
-                        id={'typeGroup'}
                         onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => setGroupType(option.text)}
                         placeholder={groupSelected?.TipoDeGrupo}
                         label="Tipo de Grupo"
@@ -212,7 +209,6 @@ function EditGrupo() {
                         styles={dropdownStyles}
                     />
                     <Dropdown
-                        id={'theme'}
                         onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => setTheme(option.text)}
                         placeholder={groupSelected?.Tematica}
                         label="Tematica"

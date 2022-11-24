@@ -27,21 +27,21 @@ export interface ISectores {
 
 export interface IGrupos {
     ID: number;
-    CodigoDeGrupo: string;
     SectorAsociado: string;
     Denominacion: string;
     Descripcion: string;
     FechaDeCreacion: string;
     FechaDeFinalizacion: string;
-    Ambito: string;
+    Estado: boolean;
     TipoDeGrupo: string;
     Tematica: string;
-    AmbitoGeografico: string;
-    AmbitoOrganizativoInternacional: string;
-    Pais: string;
-    Estado: boolean;
-    Ciudad: string;
-    Attachments: string;
+    // Pais: string;
+    // Ambito: string;
+    // Ciudad: string;
+    // Attachments: any[];
+    // CodigoDeGrupo: string;
+    // AmbitoOrganizativoInternacional: string;
+    // AmbitoGeografico: string;
 }
 
 export interface IFormFieds {
