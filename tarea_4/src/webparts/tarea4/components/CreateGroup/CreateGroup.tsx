@@ -36,7 +36,7 @@ function CreateGrupo() {
     const [groupTypes, setGroupTypes] = useState<IDropdownOption[]>([])
     const [themes, setThemes] = useState<IDropdownOption[]>([])
 
-    const [sector, setSector] = useState<number>()
+    const [sector, setSector] = useState<string | number>()
     const [denomination, setDenomination] = useState<string>()
     const [description, setDescription] = useState<string>()
     const [dateCreate, setDateCreate] = useState<Date>()
@@ -172,7 +172,7 @@ function CreateGrupo() {
                 <Stack {...columnProps}>
                     <Stack horizontal horizontalAlign={'end'} {...columnProps}>
                         <PrimaryButton style={{ maxWidth: "100px" }} text="Crear Datos" onClick={() => addItem()} allowDisabledFocus />
-                        <Link to={'/_layouts/15/workbench.aspx/'} >
+                        <Link to={'/'} >
                             <PrimaryButton style={{ maxWidth: "100px" }} text="Volver" allowDisabledFocus />
                         </Link>
                     </Stack>

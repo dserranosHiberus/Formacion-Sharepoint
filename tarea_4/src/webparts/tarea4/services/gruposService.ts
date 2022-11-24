@@ -1,5 +1,5 @@
 import { getSP } from "../../../pnpjsConfig";
-import { IGrupos } from "../models/Interfaces";
+import { IGrupos, IFormFields } from "../models/Interfaces";
 import CreateGrupo from "../components/CreateGroup/CreateGroup";
 import { IDropdownOption, themeRulesStandardCreator } from "@fluentui/react";
 
@@ -13,7 +13,6 @@ const readGroups = async (): Promise<IGrupos[]> => {
         .web.lists.getById(IdListGrupos)
         .items.select("*", "SectorAsociado/Denominacion", "TaxCatchAll/Term")
         .expand("TaxCatchAll", "SectorAsociado")()
-    console.log(gruposCall)
     return gruposCall.map((item) => ({
 
         ID: item.ID,
@@ -27,9 +26,9 @@ const readGroups = async (): Promise<IGrupos[]> => {
         Estado: item.Estado,
         TipoDeGrupo: item.TipoDeGrupo,
         Tematica: item.Tematica,
-        // Ambito: item.TaxCatchAll[2].Term,
-        // Pais: item.TaxCatchAll[1].Term,
-        // Ciudad: item.TaxCatchAll[0].Term,
+        Ambito: item.TaxCatchAll[2].Term,
+        Pais: item.TaxCatchAll[1].Term,
+        Ciudad: item.TaxCatchAll[0].Term,
         // Attachments: item.Attachments
     }));
 }
@@ -55,9 +54,9 @@ const readGroupSelect = async (Id: number): Promise<IGrupos> => {
         TipoDeGrupo: CallGroupSelected.TipoDeGrupo,
         Tematica: CallGroupSelected.Tematica,
         Estado: CallGroupSelected.Estado,
-        // Ambito: CallGroupSelected.TaxCatchAll[2].Term,
-        // Pais: CallGroupSelected.TaxCatchAll[1].Term,
-        // Ciudad: CallGroupSelected.TaxCatchAll[0].Term,
+        Ambito: CallGroupSelected.TaxCatchAll[2].Term,
+        Pais: CallGroupSelected.TaxCatchAll[1].Term,
+        Ciudad: CallGroupSelected.TaxCatchAll[0].Term,
         // Attachments: CallGroupSelected.Attachments
     }
     // console.log("Grupo seleccionado", grupo)
@@ -93,26 +92,38 @@ const readGroupSelect = async (Id: number): Promise<IGrupos> => {
 // }
 
 // *****EDICION DE UN GRUPO SELECCIONADO*****
-// const updateGroup = async () => {
-//     const editGroup = await getSP().web.lists.getById(IdListGrupos).items.getById(id).validateUpdateListItem(sysUpdateData)
-//     const sysUpdateData = [
-//         { FieldName: 'Title', FieldValue: grupo.denominacion },
-//         { FieldName: 'CodigoGrupo', FieldValue: grupo.denominacion },
-//         { FieldName: 'SectorAsociado', FieldValue: grupo.sectorAsociado.toString() },
-//         { FieldName: 'Denominacion', FieldValue: grupo.denominacion },
-//         { FieldName: 'DescripcionGrupo', FieldValue: grupo.descripcion },
-//         { FieldName: 'FechaCreacion', FieldValue: auxCreacionDateString },
-//         { FieldName: 'FechaFinalizacion', FieldValue: auxFinalizacionDateString }
-//         { FieldName: 'Ambito', FieldValue: grupo.ambito },
-//         { FieldName: 'TipoGrupo', FieldValue: grupo.tipoGrupo },
-//         { FieldName: 'Tematica', FieldValue: grupo.tematica },
-//         { FieldName: 'AmbitoGeografico', FieldValue: grupo.ambitoGeografico },
-//         { FieldName: 'AmbitoOrganizativoInternacional', FieldValue: grupo.ambitoOrganizativoInternacional },
-//         { FieldName: 'Estado', FieldValue: (+grupo.estado).toString() },
-//         { FieldName: 'Pais', FieldValue: grupo.pais },
-//         { FieldName: 'Ciudad', FieldValue: grupo.ciudad },
-//     ];
-// }
+const updateGroup = async (formField: IFormFields, Id: number) => {
+    try {
+        const itemUpdate = await getSP()
+            .web.lists.getById(IdListGrupos)
+            .items.getById(Id)
+            .update({
+                SectorAsociadoId: formField.SectorAsociadoId,
+                Denominacion: formField.Denominacion,
+                Descripcion: formField.Descripcion,
+                FechaDeCreacion: formField.FechaDeCreacion,
+                FechaDeFinalizacion: formField.FechaDeFinalizacion,
+                Estado: formField.Estado,
+                TipoDeGrupo: formField.TipoDeGrupo,
+                Tematica: formField.Tematica,
+                // Pais: formField.Pais,
+                // Ciudad: formField.Ciudad,
+                // Attachments: formField.Attachments
+            })
+
+        alert(`El grupo ${Id} ha sido actualizado correctamente!`);
+        setTimeout(() => {
+            window.location.href = '/'
+        }, 1000)
+
+    } catch (error) {
+        alert("Ha surgido un error al editar el grupo");
+        console.error("Ha surgido un error al editar el grupo", error);
+        setTimeout(() => {
+            window.location.href = '/'
+        }, 1000)
+    }
+}
 
 // *****BORRADO DEL GRUPO SELECCIONADO*****
 const deleteGroup = async (Id: number) => {
@@ -123,14 +134,17 @@ const deleteGroup = async (Id: number) => {
             console.log("Datos del borrado", deleteItem);
             alert(`El grupo: ${Id} se ha borrado correctamente!`);
             setTimeout(() => {
-                window.location.href = '/_layouts/15/workbench.aspx/'
-            }, 2000)
+                window.location.href = '/'
+            }, 1000)
         }
         deleteItem()
     }
     else {
         console.log("Borrado cancelado")
         alert("Se ha cancelado el borrado")
+        setTimeout(() => {
+            window.location.href = '/'
+        }, 1000)
     }
 }
 
@@ -159,7 +173,7 @@ export const gruposService = {
     // createGroup
     readGroups,
     readGroupSelect,
-    // updateGroup,
+    updateGroup,
     deleteGroup,
     getGroupTypes,
     getThematic,

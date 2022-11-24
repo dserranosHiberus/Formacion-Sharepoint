@@ -41,12 +41,12 @@ const GruposCards = () => {
 
     return (
         <>
-            <Link to={'/_layouts/15/workbench.aspx/createGroup/'} horizontal horizontalAlign={'end'} {...columnProps}>
+            <Link to={'/createGroup/'} horizontal horizontalAlign={'end'} {...columnProps}>
                 <PrimaryButton style={{ maxWidth: "100px" }} text="Crear Grupo" allowDisabledFocus />
             </Link>
             <div>
                 {groupList.map(item => (
-                    <Link key={item.ID} to={`/_layouts/15/workbench.aspx/editGroup/${item.ID}`}>
+                    <Link key={item.ID} to={`/editGroup/${item.ID}`}>
                         <DocumentCard
                             aria-label={'Document Card with image. How to make a good design. ' +
                                 'Last modified by Annie Lindqvist and 2 others in March 13, 2018.'}
@@ -54,7 +54,6 @@ const GruposCards = () => {
                             style={{ boxShadow: theme.effects.elevation16, margin: 10 }}>
 
                             <DocumentCardDetails>
-                                <p>{item.ID}</p>
                                 <DocumentCardTitle
                                     title={item.SectorAsociado}
                                     shouldTruncate

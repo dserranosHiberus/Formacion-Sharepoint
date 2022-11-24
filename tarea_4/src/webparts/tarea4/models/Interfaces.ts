@@ -33,7 +33,7 @@ export interface ISectorId {
 export interface IGrupos {
     ID: number;
     SectorAsociado: string;
-    SectorAsociadoId: number;
+    SectorAsociadoId: string | number;
     Denominacion: string;
     Descripcion: string;
     FechaDeCreacion: string;
@@ -41,9 +41,9 @@ export interface IGrupos {
     Estado: boolean;
     TipoDeGrupo: string;
     Tematica: string;
-    // Pais: string;
-    // Ambito: string;
-    // Ciudad: string;
+    Pais: string;
+    Ambito: string;
+    Ciudad: string;
     // Attachments: any[];
     // CodigoDeGrupo: string;
     // AmbitoOrganizativoInternacional: string;
@@ -51,12 +51,17 @@ export interface IGrupos {
 }
 
 export interface IFormFields {
-    sectorValue: number;
-    sectorValueString: string;
-    DenominationValue: string;
-    DescriptionValue: string;
-    CreateDateValue: string;
-    FinallyDateValue: string;
-    StateValue: string;
+
+    SectorAsociadoId: string | number;
+    Denominacion: string;
+    Descripcion: string;
+    FechaDeCreacion: Date;
+    FechaDeFinalizacion: Date;
+    Estado: boolean;
+    TipoDeGrupo: string;
+    Tematica: string;
+    Pais: string;
+    Ambito: string;
+    Ciudad: string;
 }
 

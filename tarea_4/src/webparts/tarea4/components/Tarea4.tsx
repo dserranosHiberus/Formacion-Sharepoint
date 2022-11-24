@@ -6,7 +6,7 @@ import EditGrupo from './EditGrupo/EditGrupo';
 
 import { ITarea4Props } from '../models/Interfaces';
 
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 
 export const SPContext = React.createContext(null)
 
@@ -21,13 +21,13 @@ const Tarea4 = (props: ITarea4Props) => {
   return (
     <>
       <SPContext.Provider value={value}>
-        <Router>
+        <HashRouter>
           <Routes>
-            <Route path="/_layouts/15/workbench.aspx/" element={<GruposCards />} />
-            <Route path="/_layouts/15/workbench.aspx/editGroup/:groupId" element={<EditGrupo />} />
-            <Route path="/_layouts/15/workbench.aspx/createGroup/" element={<CreateGrupo />} />
+            <Route path="/" element={<GruposCards />} />
+            <Route path="/editGroup/:groupId" element={<EditGrupo />} />
+            <Route path="/createGroup/" element={<CreateGrupo />} />
           </Routes>
-        </Router>
+        </HashRouter>
       </SPContext.Provider>
     </>
   )
