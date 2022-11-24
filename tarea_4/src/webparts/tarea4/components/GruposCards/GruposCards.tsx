@@ -55,6 +55,12 @@ const GruposCards = () => {
 
                             <DocumentCardDetails>
                                 <DocumentCardTitle
+                                    title={item.CodigoDeGrupo}
+                                    shouldTruncate
+                                    showAsSecondaryTitle
+                                />
+
+                                <DocumentCardTitle
                                     title={item.SectorAsociado}
                                     shouldTruncate
                                     showAsSecondaryTitle
