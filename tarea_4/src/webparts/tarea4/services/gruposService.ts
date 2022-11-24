@@ -1,7 +1,9 @@
 import { getSP } from "../../../pnpjsConfig";
 import { IGrupos, IFormFields } from "../models/Interfaces";
-import CreateGrupo from "../components/CreateGroup/CreateGroup";
 import { IDropdownOption, themeRulesStandardCreator } from "@fluentui/react";
+import { useNavigate } from "react-router-dom";
+
+const navigate = useNavigate()
 
 const nameListGrupos = "Grupos de la Unidad X";
 const IdListGrupos = "f1193dcc-6ec0-44f0-9124-d526430752d0";
@@ -26,9 +28,9 @@ const readGroups = async (): Promise<IGrupos[]> => {
         Estado: item.Estado,
         TipoDeGrupo: item.TipoDeGrupo,
         Tematica: item.Tematica,
-        Ambito: item.TaxCatchAll[2].Term,
-        Pais: item.TaxCatchAll[1].Term,
-        Ciudad: item.TaxCatchAll[0].Term,
+        // Ambito: item.TaxCatchAll[2].Term,
+        // Pais: item.TaxCatchAll[1].Term,
+        // Ciudad: item.TaxCatchAll[0].Term,
         // Attachments: item.Attachments
     }));
 }
@@ -45,6 +47,7 @@ const readGroupSelect = async (Id: number): Promise<IGrupos> => {
     // console.log("Antes del return", CallGroupSelected)
     const grupo: IGrupos = {
         ID: CallGroupSelected.ID,
+        CodigoDeGrupo: CallGroupSelected.CodigoDeGrupo,
         SectorAsociado: CallGroupSelected.SectorAsociado.Denominacion,
         SectorAsociadoId: CallGroupSelected.SectorAsociadoId,
         Denominacion: CallGroupSelected.Denominacion,
@@ -54,9 +57,9 @@ const readGroupSelect = async (Id: number): Promise<IGrupos> => {
         TipoDeGrupo: CallGroupSelected.TipoDeGrupo,
         Tematica: CallGroupSelected.Tematica,
         Estado: CallGroupSelected.Estado,
-        Ambito: CallGroupSelected.TaxCatchAll[2].Term,
-        Pais: CallGroupSelected.TaxCatchAll[1].Term,
-        Ciudad: CallGroupSelected.TaxCatchAll[0].Term,
+        // Ambito: CallGroupSelected.TaxCatchAll[2].Term,
+        // Pais: CallGroupSelected.TaxCatchAll[1].Term,
+        // Ciudad: CallGroupSelected.TaxCatchAll[0].Term,
         // Attachments: CallGroupSelected.Attachments
     }
     // console.log("Grupo seleccionado", grupo)
@@ -64,32 +67,39 @@ const readGroupSelect = async (Id: number): Promise<IGrupos> => {
 };
 
 // *****CREACCION DE NUEVO GRUPO*****
-// const createGroup = async () => {
-//     try {
-//         const addGroup = await getSP()
-//             .web.lists.getByTitle(nameListGrupos)
-//             .items.add({
-//                 SectorAsociado: document.getElementById("sector")['value'],
-//                 Denominacion: document.getElementById("denominacion")['value'],
-//                 Descripcion: document.getElementById("descripcion")['value'],
-//                 FechaDeCreacion: new Date(document.getElementById("createDate")['value'],),
-//                 FechaDeFinalizacion: new Date(document.getElementById("finallyDate")['value'],),
-//                 Ambito: document.getElementById("ID")['value'],
-//                 TipoDeGrupo: document.getElementById("ID")['value'],
-//                 Tematica: document.getElementById("theme")['value'],
-//                 AmbitoGeografico: document.getElementById("ID")['value'],
-//                 AmbitoOrganizativoInternacional: document.getElementById("ID")['value'],
-//                 Estado: document.getElementById("estado")['value'],
-//                 Pais: document.getElementById("country")['value'],
-//                 Ciudad: document.getElementById("city")['value'],
-//                 Attachments: document.getElementById("ID")['value']
-//             });
-//         console.log("addGroup", addGroup)
-//         alert(`Item created successfully with ID: ${addGroup.data.ID}`);
-//     } catch (error) {
-//         console.error(error)
-//     }
-// }
+const createGroup = async (formField: IFormFields) => {
+    try {
+        const itemUpdate = await getSP()
+            .web.lists.getById(IdListGrupos)
+            .items.add({
+                CodigoDeGrupo: formField.CodigoDeGrupo,
+                SectorAsociadoId: formField.SectorAsociadoId,
+                Denominacion: formField.Denominacion,
+                Descripcion: formField.Descripcion,
+                FechaDeCreacion: formField.FechaDeCreacion,
+                FechaDeFinalizacion: formField.FechaDeFinalizacion,
+                Estado: formField.Estado,
+                TipoDeGrupo: formField.TipoDeGrupo,
+                Tematica: formField.Tematica,
+                // Ambito: formField.Ambito,
+                // Pais: formField.Pais,
+                // Ciudad: formField.Ciudad,
+                // Attachments: formField.Attachments
+            })
+
+        alert(`El grupo ha sido creado correctamente!`);
+        setTimeout(() => {
+            navigate("#")
+        }, 1000)
+
+    } catch (error) {
+        alert("Ha surgido un error al editar el grupo");
+        console.error("Ha surgido un error al editar el grupo", error);
+        setTimeout(() => {
+            navigate("#")
+        }, 1000)
+    }
+}
 
 // *****EDICION DE UN GRUPO SELECCIONADO*****
 const updateGroup = async (formField: IFormFields, Id: number) => {
@@ -113,14 +123,14 @@ const updateGroup = async (formField: IFormFields, Id: number) => {
 
         alert(`El grupo ${Id} ha sido actualizado correctamente!`);
         setTimeout(() => {
-            window.location.href = '/'
+            navigate("#")
         }, 1000)
 
     } catch (error) {
         alert("Ha surgido un error al editar el grupo");
         console.error("Ha surgido un error al editar el grupo", error);
         setTimeout(() => {
-            window.location.href = '/'
+            navigate("#")
         }, 1000)
     }
 }
@@ -134,7 +144,7 @@ const deleteGroup = async (Id: number) => {
             console.log("Datos del borrado", deleteItem);
             alert(`El grupo: ${Id} se ha borrado correctamente!`);
             setTimeout(() => {
-                window.location.href = '/'
+                navigate("#")
             }, 1000)
         }
         deleteItem()
@@ -143,7 +153,7 @@ const deleteGroup = async (Id: number) => {
         console.log("Borrado cancelado")
         alert("Se ha cancelado el borrado")
         setTimeout(() => {
-            window.location.href = '/'
+            navigate("#")
         }, 1000)
     }
 }
@@ -170,7 +180,7 @@ const getThematic = async (): Promise<IDropdownOption[]> => {
 
 // *****EXPORTACIONES DE FUNCIONES*****
 export const gruposService = {
-    // createGroup
+    createGroup,
     readGroups,
     readGroupSelect,
     updateGroup,

@@ -29,6 +29,7 @@ import { selectProperties, textAreaProperties } from 'office-ui-fabric-react';
 function EditGrupo() {
 
     const context = React.useContext(SPContext)
+    const date: Date = new Date();
 
     const { groupId } = useParams()
     const [groupSelected, setGroupSelected] = useState<IGrupos>()
@@ -48,10 +49,9 @@ function EditGrupo() {
         Tematica: "",
         Ambito: "",
         Ciudad: "",
-        Pais: ""
+        Pais: "",
+        CodigoDeGrupo: date + "",
     })
-
-    const IdListGrupos = "f1193dcc-6ec0-44f0-9124-d526430752d0";
 
     React.useEffect(() => {
         const getGrupo = async () => {
@@ -143,6 +143,11 @@ function EditGrupo() {
 
                     <Toggle label="Estado" onText="Abierto" offText="Cerrado"
                         onChange={(event: React.MouseEvent<HTMLElement>, checked?: boolean) => setFormFields({ ...formField, Estado: checked })} />
+
+                    <TextField
+                        onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => setFormFields({ ...formField, CodigoDeGrupo: newValue })}
+                        placeholder={groupSelected?.CodigoDeGrupo} label="Codigo del Grupo" />
+
                     <Dropdown
                         onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => setFormFields({ ...formField, TipoDeGrupo: option.text })}
                         placeholder={groupSelected?.TipoDeGrupo}
