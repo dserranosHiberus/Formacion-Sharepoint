@@ -13,7 +13,7 @@ const readGroups = async (): Promise<IGrupos[]> => {
 
     const gruposCall = await getSP()
         .web.lists.getById(IdListGrupos)
-        .items.select("*", "SectorAsociado/Denominacion", "TaxCatchAll/Term")
+        .items.select("*", "SectorAsociado/Denominacion", "TaxCatchAll/Term", "TaxCatchAll/ID")
         .expand("TaxCatchAll", "SectorAsociado")()
     return gruposCall.map((item) => ({
 
@@ -28,8 +28,8 @@ const readGroups = async (): Promise<IGrupos[]> => {
         Estado: item.Estado,
         TipoDeGrupo: item.TipoDeGrupo,
         Tematica: item.Tematica,
-        // Ambito: item.TaxCatchAll[2].Term,
-        // Pais: item.TaxCatchAll[1].Term,
+        Ambito: item.TaxCatchAll[2].Term,
+        Pais: item.TaxCatchAll[1].Term,
         // Ciudad: item.TaxCatchAll[0].Term,
         // Attachments: item.Attachments
     }));
@@ -41,7 +41,7 @@ const readGroupSelect = async (Id: number): Promise<IGrupos> => {
     const CallGroupSelected = await getSP()
         .web.lists.getByTitle(nameListGrupos)
         .items.getById(Id)
-        .select("*", "SectorAsociado/Denominacion", "TaxCatchAll/Term")
+        .select("*", "SectorAsociado/Denominacion", "TaxCatchAll/Term", "TaxCatchAll/ID")
         .expand("TaxCatchAll", "SectorAsociado")()
 
     // console.log("Antes del return", CallGroupSelected)
@@ -57,8 +57,8 @@ const readGroupSelect = async (Id: number): Promise<IGrupos> => {
         TipoDeGrupo: CallGroupSelected.TipoDeGrupo,
         Tematica: CallGroupSelected.Tematica,
         Estado: CallGroupSelected.Estado,
-        // Ambito: CallGroupSelected.TaxCatchAll[2].Term,
-        // Pais: CallGroupSelected.TaxCatchAll[1].Term,
+        Ambito: CallGroupSelected.TaxCatchAll[2].Term,
+        Pais: CallGroupSelected.TaxCatchAll[1].Term,
         // Ciudad: CallGroupSelected.TaxCatchAll[0].Term,
         // Attachments: CallGroupSelected.Attachments
     }
@@ -141,7 +141,6 @@ const deleteGroup = async (Id: number) => {
     if (option === true) {
         const deleteItem = async () => {
             let deleteItem = await getSP().web.lists.getById(IdListGrupos).items.getById(Id).delete();
-            console.log("Datos del borrado", deleteItem);
             alert(`El grupo: ${Id} se ha borrado correctamente!`);
             setTimeout(() => {
                 navigate("#")

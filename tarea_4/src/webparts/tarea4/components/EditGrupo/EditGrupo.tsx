@@ -2,14 +2,21 @@ import * as React from 'react';
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
-import { SPContext } from '../Tarea4';
+import { useSPContext } from '../Tarea4';
 import { IGrupos, IFormFields } from '../../models/Interfaces';
-import { getSP } from '../../../../pnpjsConfig';
-
 import { sectoresService } from '../../services/sectoresService';
 import { gruposService } from "../../services/gruposService";
 
 import { TaxonomyPicker, IPickerTerms } from "@pnp/spfx-controls-react/lib/TaxonomyPicker";
+
+// import { spfi } from "@pnp/sp";
+// import "@pnp/sp/taxonomy";
+// import { ITermStoreInfo } from "@pnp/sp/taxonomy";
+
+// const sp = spfi(...);
+
+// // get term store data
+// const info: ITermStoreInfo = await sp.termStore();
 
 import { TextField } from '@fluentui/react/lib/TextField';
 import { Stack, IStackProps, IStackStyles } from '@fluentui/react/lib/Stack';
@@ -28,8 +35,8 @@ import { selectProperties, textAreaProperties } from 'office-ui-fabric-react';
 
 function EditGrupo() {
 
-    const context = React.useContext(SPContext)
-    const date: Date = new Date();
+    const context: any = useSPContext
+
 
     const { groupId } = useParams()
     const [groupSelected, setGroupSelected] = useState<IGrupos>()
@@ -39,7 +46,7 @@ function EditGrupo() {
 
     const [formField, setFormFields] = useState<IFormFields>({
 
-        SectorAsociadoId: "",
+        SectorAsociadoId: 0,
         Denominacion: "",
         Descripcion: "",
         FechaDeCreacion: new Date(),
@@ -48,9 +55,9 @@ function EditGrupo() {
         TipoDeGrupo: "",
         Tematica: "",
         Ambito: "",
-        Ciudad: "",
-        Pais: "",
-        CodigoDeGrupo: date + "",
+        Ciudad: [],
+        Pais: [],
+        CodigoDeGrupo: "",
     })
 
     React.useEffect(() => {
@@ -92,8 +99,8 @@ function EditGrupo() {
         dropdown: { width: 300 },
     };
 
-    function onTaxPickerChange(terms: IPickerTerms) {
-        console.log("Terms", terms);
+    const onTaxPickerChange = (newValue?: IPickerTerms) => {
+        console.log("Terms", newValue);
     }
 
     return (
@@ -103,7 +110,7 @@ function EditGrupo() {
                     <Dropdown
                         onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => setFormFields({ ...formField, SectorAsociadoId: option.key })}
                         placeholder={groupSelected?.SectorAsociado}
-                        label="Sector"
+                        label="Sector Asociado"
                         options={sectors}
                         styles={dropdownStyles}
                     />
@@ -166,24 +173,29 @@ function EditGrupo() {
                         termsetNameOrID="Ambito"
                         panelTitle="Selecciona un ambito"
                         label="Ambito"
-                        onChange={onTaxPickerChange}
+                        initialValues={groupSelected?.Ambito}
+                        onChange={onTaxPickerChange("Ambito")}
                         context={context}
                         isTermSetSelectable={false}
                         required
                     /> */}
-                    {/* <TaxonomyPicker allowMultipleSelections={false}
+                    <TaxonomyPicker allowMultipleSelections={false}
                         termsetNameOrID="Pais"
                         panelTitle="Selecciona un país"
                         label="Pais"
+                        initialValues={groupSelected?.Pais}
                         onChange={onTaxPickerChange}
                         context={context}
                         isTermSetSelectable={false}
-                    /> */}
+                    />
                     {/* <TaxonomyPicker allowMultipleSelections={false}
                         termsetNameOrID="Ciudad"
                         panelTitle="Selecciona una Ciudad"
                         label="Ciudad"
-                        onChange={onTaxPickerChange}
+                         initialValues={groupSelected?.Ciudad}
+                        onChange={ setFormFields({ ...formField, Tematica: option.text })}
+                        onChange={onTaxPickerChange("Ciudad")}
+                        panelTitle="Selecciona Selecciona una Ciudad"
                         context={context}
                         isTermSetSelectable={false}
                     /> */}

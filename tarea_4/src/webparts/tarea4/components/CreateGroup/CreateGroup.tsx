@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { SPContext } from '../Tarea4';
+import { useSPContext } from '../Tarea4';
 import { IFormFields } from '../../models/Interfaces';
 
 import { sectoresService } from '../../services/sectoresService';
@@ -37,8 +37,8 @@ function CreateGrupo() {
     const [themes, setThemes] = useState<IDropdownOption[]>([])
 
     const [formField, setFormFields] = useState<IFormFields>({
-        CodigoDeGrupo: date + "",
-        SectorAsociadoId: "",
+        CodigoDeGrupo: "",
+        SectorAsociadoId: 0,
         Denominacion: "",
         Descripcion: "",
         FechaDeCreacion: new Date(),
@@ -46,12 +46,12 @@ function CreateGrupo() {
         Estado: false,
         TipoDeGrupo: "",
         Tematica: "",
-        Ambito: "",
-        Ciudad: "",
-        Pais: ""
+        Ambito: [],
+        Ciudad: [],
+        Pais: []
     })
 
-    const context = React.useContext(SPContext)
+    const context = useSPContext
 
     React.useEffect(() => {
         const getAssociatedSector = async () => {

@@ -6,30 +6,32 @@ import EditGrupo from './EditGrupo/EditGrupo';
 
 import { ITarea4Props } from '../models/Interfaces';
 
-import { HashRouter, Route, Routes } from "react-router-dom";
+import { HashRouter as Router, Route, Routes } from "react-router-dom";
+import { WebPartContext } from '@microsoft/sp-webpart-base';
 
-export const SPContext = React.createContext(null)
+const SPContext = React.createContext(null)
+export const useSPContext = (): WebPartContext => React.useContext(SPContext);
 
-const Tarea4 = (props: ITarea4Props) => {
-  // console.log("Desde Tarea4", props.context)
-  // const [contador, setContador] = React.useState<number>(1)
-  // const aumentar = () => setContador(prev => prev + 1)
-  // const value = { contador, aumentar, context: props.context }
 
-  const value = { context: props.context }
+// console.log("Desde Tarea4", props.context)
+// const [contador, setContador] = React.useState<number>(1)
+// const aumentar = () => setContador(prev => prev + 1)
+// const value = { contador, aumentar, context: props.context }
+//o tambien vale => const value = { context: props.context }
 
+
+export default function Tarea4({
+  context,
+}: ITarea4Props): React.ReactElement {
   return (
-    <>
-      <SPContext.Provider value={value}>
-        <HashRouter>
-          <Routes>
-            <Route path="/" element={<GruposCards />} />
-            <Route path="/editGroup/:groupId" element={<EditGrupo />} />
-            <Route path="/createGroup/" element={<CreateGrupo />} />
-          </Routes>
-        </HashRouter>
-      </SPContext.Provider>
-    </>
+    <SPContext.Provider value={context}>
+      <Router>
+        <Routes>
+          <Route path="/" element={<GruposCards />} />
+          <Route path="/editGroup/:groupId" element={<EditGrupo />} />
+          <Route path="/createGroup/" element={<CreateGrupo />} />
+        </Routes>
+      </Router>
+    </SPContext.Provider>
   )
 }
-export default Tarea4

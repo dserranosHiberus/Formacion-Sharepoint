@@ -42,9 +42,9 @@ export interface IGrupos {
     Estado: boolean;
     TipoDeGrupo: string;
     Tematica: string;
-    // Pais: string;
-    // Ambito: string;
-    // Ciudad: string;
+    Ambito: [];
+    Pais: [];
+    // Ciudad: [];
     // Attachments: any[];
     // AmbitoOrganizativoInternacional: string;
     // AmbitoGeografico: string;
@@ -61,8 +61,8 @@ export interface IFormFields {
     Estado: boolean;
     TipoDeGrupo: string;
     Tematica: string;
-    Pais: string;
-    Ambito: string;
-    Ciudad: string;
+    Pais: [];
+    Ambito: any;
+    Ciudad: [];
 }
 
