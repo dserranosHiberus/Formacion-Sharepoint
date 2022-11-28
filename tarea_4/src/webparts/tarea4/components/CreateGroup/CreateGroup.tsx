@@ -1,44 +1,41 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { SPContext } from '../Tarea4';
-import { IFormFields } from '../../models/Interfaces';
+import { IFormFields, IGrupos } from '../../models/Interfaces';
+import { getSP } from '../../../../pnpjsConfig';
 
 import { sectoresService } from '../../services/sectoresService';
 import { gruposService } from "../../services/gruposService";
 
-import { TaxonomyPicker, IPickerTerms, UpdateType, UpdateAction, IPickerTerm } from "@pnp/spfx-controls-react/lib/TaxonomyPicker";
-
-import { TextField, MaskedTextField, ITextFieldStyles } from '@fluentui/react/lib/TextField';
+import { TextField } from '@fluentui/react/lib/TextField';
 import { Stack, IStackProps, IStackStyles } from '@fluentui/react/lib/Stack';
 import { PrimaryButton } from '@fluentui/react/lib/Button';
 import { Toggle } from '@fluentui/react/lib/Toggle';
 import {
-    SelectableOptionMenuItemType,
     DatePicker,
     DayOfWeek,
     Dropdown,
-    DropdownMenuItemType,
     IDropdownOption,
     IDropdownStyles,
     defaultDatePickerStrings,
     values
 } from '@fluentui/react';
-
-import { selectProperties, textAreaProperties } from 'office-ui-fabric-react';
+import { validates } from '../../services/validates';
 
 function CreateGrupo() {
 
-    const date: Date = new Date();
+    const navigate = useNavigate()
 
+    const [groupSelected, setGroupSelected] = useState<IGrupos>()
     const [sectors, setSectors] = useState<IDropdownOption[]>([])
     const [groupTypes, setGroupTypes] = useState<IDropdownOption[]>([])
     const [themes, setThemes] = useState<IDropdownOption[]>([])
 
     const [formField, setFormFields] = useState<IFormFields>({
-        CodigoDeGrupo: date + "",
         SectorAsociadoId: "",
+        CodigoDeGrupo: "",
         Denominacion: "",
         Descripcion: "",
         FechaDeCreacion: new Date(),
@@ -46,12 +43,31 @@ function CreateGrupo() {
         Estado: false,
         TipoDeGrupo: "",
         Tematica: "",
-        Ambito: "",
-        Ciudad: "",
-        Pais: ""
     })
 
-    const context = React.useContext(SPContext)
+    const createGroup = async () => {
+
+        let messageError = validates.checkFieldsCreate(formField)
+        console.log(messageError)
+        if (!messageError || messageError.length == 0) {
+
+            await gruposService.createGroup(formField)
+            try {
+                alert(`El grupo ha sido creado correctamente!`);
+                setTimeout(() => {
+                    navigate('/')
+                }, 1000)
+
+            } catch (error) {
+                alert("Ha surgido un error al editar el grupo");
+                setTimeout(() => {
+                    navigate('/')
+                }, 1000)
+            }
+        } else {
+            alert(messageError)
+        }
+    }
 
     React.useEffect(() => {
         const getAssociatedSector = async () => {
@@ -89,28 +105,31 @@ function CreateGrupo() {
         setFirstDayOfWeek(option.key as number);
     }, []);
 
-    function onTaxPickerChange(terms: IPickerTerms) {
-        console.log("Terms", terms);
-    }
-
     return (
         <>
             <Stack horizontal tokens={stackTokens} styles={stackStyles}>
                 <Stack {...columnProps}>
                     <Dropdown
                         onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => setFormFields({ ...formField, SectorAsociadoId: option.key })}
-                        label="Sector"
+                        label="Sector Asociado"
+                        placeholder="Selecciona una opcion"
                         options={sectors}
                         styles={dropdownStyles}
                     />
-                    <TextField id={'denominacion'}
+                    <TextField
+                        placeholder="Introduce un Codigo de Grupo"
+                        onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => setFormFields({ ...formField, CodigoDeGrupo: newValue })}
+                        label="Codigo De Grupo" />
+                    <TextField
+                        placeholder="Introduce su Denominacion"
                         onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => setFormFields({ ...formField, Denominacion: newValue })}
                         label="Denominación" />
-                    <TextField id={'descripcion'}
+                    <TextField
+                        placeholder="Introduce una descripcion"
                         onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => setFormFields({ ...formField, Descripcion: newValue })}
                         label="Descripción" multiline rows={3} />
                     <DatePicker
-                        id={'createDate'}
+                        placeholder="Selecciona una Fecha"
                         onSelectDate={(date: Date) => setFormFields({ ...formField, FechaDeCreacion: date })}
                         label="Fecha de Creación"
                         firstDayOfWeek={firstDayOfWeek}
@@ -118,6 +137,7 @@ function CreateGrupo() {
                         strings={defaultDatePickerStrings}
                     />
                     <DatePicker
+                        placeholder="Selecciona una Fecha"
                         onSelectDate={(date: Date) => setFormFields({ ...formField, FechaDeFinalizacion: date })}
                         label="Fecha de Finalización"
                         firstDayOfWeek={firstDayOfWeek}
@@ -128,7 +148,7 @@ function CreateGrupo() {
 
                 <Stack {...columnProps}>
                     <Stack horizontal horizontalAlign={'end'} {...columnProps}>
-                        <PrimaryButton style={{ maxWidth: "100px" }} text="Crear Datos" onClick={() => gruposService.createGroup(formField)} allowDisabledFocus />
+                        <PrimaryButton style={{ maxWidth: "100px" }} text="Crear Datos" onClick={() => createGroup()} allowDisabledFocus />
                         <Link to={'/'} >
                             <PrimaryButton style={{ maxWidth: "100px" }} text="Volver" allowDisabledFocus />
                         </Link>
@@ -136,48 +156,20 @@ function CreateGrupo() {
 
                     <Toggle label="Estado" onText="Abierto" offText="Cerrado"
                         onChange={(event: React.MouseEvent<HTMLElement>, checked?: boolean) => setFormFields({ ...formField, Estado: checked })} />
-
-                    <TextField
-                        onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => setFormFields({ ...formField, CodigoDeGrupo: newValue })}
-                        label="Codigo del Grupo" />
-
                     <Dropdown
+                        placeholder="Selecciona una opcion"
                         onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => setFormFields({ ...formField, TipoDeGrupo: option.text })}
                         label="Tipo de Grupo"
                         options={groupTypes}
                         styles={dropdownStyles}
                     />
                     <Dropdown
+                        placeholder="Selecciona una opcion"
                         onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => setFormFields({ ...formField, Tematica: option.text })}
                         label="Tematica"
                         options={themes}
                         styles={dropdownStyles}
                     />
-                    {/* <TaxonomyPicker allowMultipleSelections={true}
-                        termsetNameOrID="Ambito"
-                        panelTitle="Selecciona un ambito"
-                        label="Ambito"
-                        onChange={onTaxPickerChange}
-                        context={context}
-                        isTermSetSelectable={false}
-                        required
-                    /> */}
-                    {/* <TaxonomyPicker allowMultipleSelections={false}
-                        termsetNameOrID="Pais"
-                        panelTitle="Selecciona un país"
-                        label="Pais"
-                        onChange={onTaxPickerChange}
-                        context={context}
-                        isTermSetSelectable={false}
-                    /> */}
-                    {/* <TaxonomyPicker allowMultipleSelections={false}
-                        termsetNameOrID="Ciudad"
-                        panelTitle="Selecciona una Ciudad"
-                        label="Ciudad"
-                        onChange={onTaxPickerChange}
-                        context={context}
-                        isTermSetSelectable={false}
-                    /> */}
                 </Stack>
             </Stack>
         </>

@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom'
 import { IGrupos } from '../../models/Interfaces';
 import { gruposService } from "../../services/gruposService";
 
-
 import {
     DocumentCard,
     DocumentCardTitle,
@@ -13,12 +12,13 @@ import {
     IDocumentCardStyles,
 } from '@fluentui/react/lib/DocumentCard';
 import { getTheme, IStackProps, PrimaryButton, Stack } from '@fluentui/react';
+import { validates } from "../../services/validates";
 
-const theme = getTheme();
+
 
 const GruposCards = () => {
     const [groupList, setGroupList] = React.useState<IGrupos[]>([])
-
+    const theme = getTheme();
 
     React.useEffect(() => {
         const getGrupos = async () => {
@@ -28,10 +28,8 @@ const GruposCards = () => {
         getGrupos()
     }, [])
 
-    // console.log("Esta en grupos cards", groupList)
-
     const cardStyles: IDocumentCardStyles = {
-        root: { display: 'inline-block', marginRight: 20, marginBottom: 20, width: 320 },
+        root: { display: 'inline-block', marginRight: 10, marginBottom: 10, width: 200 },
     };
 
     const columnProps: Partial<IStackProps> = {
@@ -51,60 +49,51 @@ const GruposCards = () => {
                             aria-label={'Document Card with image. How to make a good design. ' +
                                 'Last modified by Annie Lindqvist and 2 others in March 13, 2018.'}
                             styles={cardStyles}
-                            style={{ boxShadow: theme.effects.elevation16, margin: 10 }}>
+                            style={{ boxShadow: theme.effects.elevation8, margin: 10 }}>
 
                             <DocumentCardDetails>
                                 <DocumentCardTitle
-                                    title={item.CodigoDeGrupo}
-                                    shouldTruncate
-                                    showAsSecondaryTitle
+                                    title='Sector Asociado'
                                 />
-
                                 <DocumentCardTitle
                                     title={item.SectorAsociado}
-                                    shouldTruncate
                                     showAsSecondaryTitle
                                 />
-
+                                <DocumentCardTitle
+                                    title='Denominacion'
+                                />
                                 <DocumentCardTitle
                                     title={item.Denominacion}
-                                    shouldTruncate
                                 />
-
+                                <DocumentCardTitle
+                                    title='Descripcion'
+                                />
                                 <DocumentCardTitle
                                     title={item.Descripcion}
-                                    shouldTruncate
                                     showAsSecondaryTitle
                                 />
-
+                                <DocumentCardTitle
+                                    title='Fecha de Creacion'
+                                />
                                 <DocumentCardTitle
                                     title={item.FechaDeCreacion}
                                     showAsSecondaryTitle
                                 />
-
+                                <DocumentCardTitle
+                                    title='Fecha de Finalizacion'
+                                />
                                 <DocumentCardTitle
                                     title={item.FechaDeFinalizacion}
                                     showAsSecondaryTitle
                                 />
-
+                                <DocumentCardTitle
+                                    title='Estado'
+                                />
                                 <DocumentCardTitle
                                     title={item.Estado.toString()}
                                     shouldTruncate
                                     showAsSecondaryTitle
                                 />
-
-                                <DocumentCardTitle
-                                    title={item.TipoDeGrupo}
-                                    shouldTruncate
-                                    showAsSecondaryTitle
-                                />
-
-                                <DocumentCardTitle
-                                    title={item.Tematica}
-                                    shouldTruncate
-                                    showAsSecondaryTitle
-                                />
-
                             </DocumentCardDetails>
                         </DocumentCard>
                     </Link>

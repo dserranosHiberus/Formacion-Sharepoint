@@ -1,24 +1,12 @@
 import { IDropdownOption } from "@fluentui/react";
-import { getSP } from "../../../pnpjsConfig";
 import { ISectores, ISectorId } from "../models/Interfaces";
-
-const nameListGrupos = "SectoresUnidades";
-const IdListSectores = "988b9d7c-a505-4396-ad62-61ab21b28f62";
-
-// *****CONSULTA DE TODOS LOS GRUPOS*****
-const getSectoresArray = async (): Promise<ISectores[]> => {
-    const sectoresCall = await getSP()
-        .web.lists.getById(IdListSectores)
-        .items.select("*")()
-    // console.log("SectoresCall", sectoresCall)
-    return sectoresCall
-}
+import { directorioBLL } from "./directorioBLL";
 
 
 // *****CONSULTA DE LOS DATOS DE LA LISTA*****
 const getSectoresInfo = async (): Promise<ISectores[]> => {
 
-    let sectoresList = await getSectoresArray()
+    let sectoresList = await directorioBLL.getSectorsArray()
     return sectoresList.map((item) => ({
         ID: item.ID,
         CodigoDelSector: item.CodigoDelSector,
@@ -35,7 +23,7 @@ const getSectoresInfo = async (): Promise<ISectores[]> => {
 
 // *****CONSULTA DE SECTORES ASOCIADOS*****
 const getSectorDenomination = async (): Promise<IDropdownOption[]> => {
-    let sectoresDenominacion: any = await getSectoresArray()
+    let sectoresDenominacion: any = await directorioBLL.getSectorsArray()
     return sectoresDenominacion.map((item: ISectorId) => ({
         key: item.ID,
         text: item.Denominacion
@@ -44,7 +32,6 @@ const getSectorDenomination = async (): Promise<IDropdownOption[]> => {
 
 // *****EXPORTACIONES DE FUNCIONES*****
 export const sectoresService = {
-    getSectoresArray,
     getSectoresInfo,
     getSectorDenomination
 }
