@@ -142,7 +142,7 @@ const EditGrupo = () => {
         <>
             <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                 <div style={{ display: "flex", flexDirection: "column", margin: "20px" }}>
-                    <Stack horizontal horizontalAlign={'end'} {...columnProps}>
+                    <Stack horizontal horizontalAlign={'start'} {...columnProps}>
                         <PrimaryButton style={{ maxWidth: "100px" }} text="Modificar Datos" onClick={() => updateGroup()} allowDisabledFocus />
                         <PrimaryButton style={{ maxWidth: "100px" }} text="Borrar Grupo" onClick={() => deleteGroup()} allowDisabledFocus />
                         <Link to={'/'} >
