@@ -29,20 +29,22 @@ const GruposCards = () => {
     }, [])
 
     const cardStyles: IDocumentCardStyles = {
-        root: { display: 'inline-block', marginRight: 10, marginBottom: 10, width: 200 },
+        root: { display: 'inline-block', marginRight: 20, marginBottom: 20, width: 500 },
     };
 
     const columnProps: Partial<IStackProps> = {
         tokens: { childrenGap: 15 },
-        styles: { root: { width: 300 } },
+        styles: { root: { width: 600 } },
     };
 
     return (
         <>
-            <Link to={'/createGroup/'} horizontal horizontalAlign={'end'} {...columnProps}>
-                <PrimaryButton style={{ maxWidth: "100px" }} text="Crear Grupo" allowDisabledFocus />
-            </Link>
-            <div>
+            <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
+                <Stack horizontal horizontalAlign={'end'} {...columnProps}>
+                    <Link to={'/createGroup/'} {...columnProps}>
+                        <PrimaryButton style={{ width: "100%" }} text="Crear Grupo" allowDisabledFocus />
+                    </Link>
+                </Stack>
                 {groupList.map(item => (
                     <Link key={item.ID} to={`/editGroup/${item.ID}`}>
                         <DocumentCard
@@ -64,6 +66,7 @@ const GruposCards = () => {
                                 />
                                 <DocumentCardTitle
                                     title={item.Denominacion}
+                                    showAsSecondaryTitle
                                 />
                                 <DocumentCardTitle
                                     title='Descripcion'
@@ -84,14 +87,6 @@ const GruposCards = () => {
                                 />
                                 <DocumentCardTitle
                                     title={item.FechaDeFinalizacion}
-                                    showAsSecondaryTitle
-                                />
-                                <DocumentCardTitle
-                                    title='Estado'
-                                />
-                                <DocumentCardTitle
-                                    title={item.Estado.toString()}
-                                    shouldTruncate
                                     showAsSecondaryTitle
                                 />
                             </DocumentCardDetails>

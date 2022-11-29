@@ -21,11 +21,12 @@ import {
     defaultDatePickerStrings,
 } from '@fluentui/react';
 
-
-
-function EditGrupo() {
+const EditGrupo = () => {
 
     const navigate = useNavigate()
+
+    const [visible, setVisible] = useState(false)
+    const [messageErrors, setMessageErrors] = useState<any[]>([])
 
     const { groupId } = useParams()
     const [groupSelected, setGroupSelected] = useState<IGrupos>()
@@ -33,44 +34,42 @@ function EditGrupo() {
     const [groupTypes, setGroupTypes] = useState<IDropdownOption[]>([])
     const [themes, setThemes] = useState<IDropdownOption[]>([])
 
-    const [formField, setFormFields] = useState<IFormFields>({
+    const [formFields, setFormFields] = useState<IFormFields>({
         SectorAsociadoId: "",
+        CodigoDeGrupo: "",
         Denominacion: "",
         Descripcion: "",
-        CodigoDeGrupo: "",
-        FechaDeCreacion: new Date(),
-        FechaDeFinalizacion: new Date(),
+        FechaDeCreacion: null,
+        FechaDeFinalizacion: null,
         Estado: false,
         TipoDeGrupo: "",
         Tematica: "",
     })
 
+    // *****FUNCION ACTUALIZAR GRUPO******
     const updateGroup = async () => {
+        console.log(formFields)
+        let newFormFieldList: IFormFields = await validates.completeForm(formFields, groupSelected)
+        Object.keys(formFields).forEach(old => {
+            Object.keys(newFormFieldList).forEach(nw => {
+                if (old === nw) {
+                    formFields[old] = newFormFieldList[nw]
+                }
+            })
+        })
+        console.log(formFields)
 
-        // let newFormFieldList: IFormFields[] = validates.checkFieldsEdit(formField, groupSelected)
+        let messageError = validates.checkFieldsEdit(formFields)
+        setMessageErrors(messageError)
 
-        if (formField.SectorAsociadoId == null) { setFormFields({ ...formField, SectorAsociadoId: groupSelected?.SectorAsociadoId }) }
-        if (formField.Denominacion == null) { setFormFields({ ...formField, Denominacion: groupSelected?.Denominacion }) }
-        if (formField.Descripcion == null) { setFormFields({ ...formField, Descripcion: groupSelected?.Descripcion }) }
-        if (formField.CodigoDeGrupo == null) { setFormFields({ ...formField, CodigoDeGrupo: groupSelected?.CodigoDeGrupo }) }
-        if (formField.FechaDeCreacion == null) { setFormFields({ ...formField, FechaDeCreacion: new Date(groupSelected?.FechaDeCreacion) }) }
-        if (formField.FechaDeFinalizacion == null) { setFormFields({ ...formField, FechaDeFinalizacion: new Date(groupSelected?.FechaDeFinalizacion) }) }
-        if (formField.Estado == null) { setFormFields({ ...formField, Estado: groupSelected?.Estado }) }
-        if (formField.TipoDeGrupo == null) { setFormFields({ ...formField, TipoDeGrupo: groupSelected?.TipoDeGrupo }) }
-        if (formField.Tematica == null) { setFormFields({ ...formField, Tematica: groupSelected?.Tematica }) }
-
-
-        let messageError = validates.checkFieldsCreate(formField)
-        console.log(messageError)
         if (!messageError || messageError.length == 0) {
-
-            await gruposService.updateGroup(formField, parseInt(groupId))
+            setVisible(false)
+            await gruposService.updateGroup(formFields, parseInt(groupId))
             try {
                 alert(`El grupo ${groupId} ha sido actualizado correctamente!`);
                 setTimeout(() => {
                     navigate('/')
                 }, 1000)
-
             } catch (error) {
                 alert("Ha surgido un error al editar el grupo");
                 setTimeout(() => {
@@ -78,12 +77,11 @@ function EditGrupo() {
                 }, 1000)
             }
         } else {
-            alert(messageError)
+            setVisible(true)
         }
     }
 
-
-
+    // *****FUNCION BORRAR GRUPO*****
     const deleteGroup = async () => {
         let option: boolean = window.confirm("Seguro que quieres eliminar el Grupo???")
         if (option === true) {
@@ -109,7 +107,6 @@ function EditGrupo() {
         }
     }
 
-
     React.useEffect(() => {
         const getGrupo = async () => {
             let callGroupSelected: IGrupos = await gruposService.readGroupSelect(parseInt(groupId))
@@ -118,17 +115,14 @@ function EditGrupo() {
         const getSectores = async () => {
             let callSectors: IDropdownOption[] = await sectoresService.getSectorDenomination()
             setSectors(callSectors)
-            // console.log("Sectores", callSectors)
         }
         const getTipoDeGrupos = async () => {
             let callGroupTypes: IDropdownOption[] = await gruposService.getGroupTypes()
             setGroupTypes(callGroupTypes)
-            // console.log("Tipo de Grupos", callGroupTypes)
         }
         const getThemes = async () => {
             let callThematics: IDropdownOption[] = await gruposService.getThematic()
             setThemes(callThematics)
-            // console.log("Temas", callThemes)
         }
         getGrupo();
         getSectores();
@@ -136,8 +130,6 @@ function EditGrupo() {
         getThemes();
     }, [])
 
-    const stackTokens = { childrenGap: 50 };
-    const stackStyles: Partial<IStackStyles> = { root: { width: 650 } };
     const columnProps: Partial<IStackProps> = {
         tokens: { childrenGap: 15 },
         styles: { root: { width: 300 } },
@@ -148,45 +140,8 @@ function EditGrupo() {
 
     return (
         <>
-            <Stack horizontal tokens={stackTokens} styles={stackStyles}>
-                <Stack {...columnProps}>
-                    <Dropdown
-                        onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => setFormFields({ ...formField, SectorAsociadoId: option.key })}
-                        placeholder={groupSelected?.SectorAsociado}
-                        label="Sector Asociado"
-                        options={sectors}
-                        styles={dropdownStyles}
-                    />
-                    <TextField
-                        placeholder={groupSelected?.CodigoDeGrupo}
-                        onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => setFormFields({ ...formField, CodigoDeGrupo: newValue })}
-                        label="Codigo De Grupo" />
-                    <TextField id={'denominacion'}
-                        onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => setFormFields({ ...formField, Denominacion: newValue })}
-                        placeholder={groupSelected?.Denominacion} label="Denominación" />
-                    <TextField id={'descripcion'}
-                        onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => setFormFields({ ...formField, Descripcion: newValue })}
-                        placeholder={groupSelected?.Descripcion} label="Descripción" multiline rows={3} />
-                    <DatePicker
-                        id={'createDate'}
-                        onSelectDate={(date: Date) => setFormFields({ ...formField, FechaDeCreacion: date })}
-                        placeholder={groupSelected?.FechaDeCreacion}
-                        label="Fecha de Creación"
-                        firstDayOfWeek={DayOfWeek.Monday}
-                        ariaLabel="Select a date"
-                        strings={defaultDatePickerStrings}
-                    />
-                    <DatePicker
-                        onSelectDate={(date: Date) => setFormFields({ ...formField, FechaDeFinalizacion: date })}
-                        placeholder={groupSelected?.FechaDeFinalizacion}
-                        label="Fecha de Finalización"
-                        firstDayOfWeek={DayOfWeek.Monday}
-                        ariaLabel="Select a date"
-                        strings={defaultDatePickerStrings}
-                    />
-                </Stack>
-
-                <Stack {...columnProps}>
+            <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
+                <div style={{ display: "flex", flexDirection: "column", margin: "20px" }}>
                     <Stack horizontal horizontalAlign={'end'} {...columnProps}>
                         <PrimaryButton style={{ maxWidth: "100px" }} text="Modificar Datos" onClick={() => updateGroup()} allowDisabledFocus />
                         <PrimaryButton style={{ maxWidth: "100px" }} text="Borrar Grupo" onClick={() => deleteGroup()} allowDisabledFocus />
@@ -194,25 +149,70 @@ function EditGrupo() {
                             <PrimaryButton style={{ maxWidth: "100px" }} text="Volver" allowDisabledFocus />
                         </Link>
                     </Stack>
+                    <Dropdown
+                        onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => setFormFields({ ...formFields, SectorAsociadoId: option.key })}
+                        label="Sector Asociado"
+                        placeholder="Selecciona una opcion"
+                        options={sectors}
+                        styles={dropdownStyles}
+                    />
+                    <TextField
+                        placeholder={groupSelected?.CodigoDeGrupo}
+                        onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => setFormFields({ ...formFields, CodigoDeGrupo: newValue })}
+                        label="Codigo De Grupo" />
+                    <TextField id={'denominacion'}
+                        onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => setFormFields({ ...formFields, Denominacion: newValue })}
+                        placeholder={groupSelected?.Denominacion} label="Denominación" />
+                    <TextField id={'descripcion'}
+                        onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => setFormFields({ ...formFields, Descripcion: newValue })}
+                        placeholder={groupSelected?.Descripcion} label="Descripción" multiline rows={3} />
+                    <DatePicker
+                        id={'createDate'}
+                        onSelectDate={(date: Date) => setFormFields({ ...formFields, FechaDeCreacion: date })}
+                        placeholder={groupSelected?.FechaDeCreacion}
+                        label="Fecha de Creación"
+                        firstDayOfWeek={DayOfWeek.Monday}
+                        ariaLabel="Select a date"
+                        strings={defaultDatePickerStrings}
+                    />
+                    <DatePicker
+                        onSelectDate={(date: Date) => setFormFields({ ...formFields, FechaDeFinalizacion: date })}
+                        placeholder={groupSelected?.FechaDeFinalizacion}
+                        label="Fecha de Finalización"
+                        firstDayOfWeek={DayOfWeek.Monday}
+                        ariaLabel="Select a date"
+                        strings={defaultDatePickerStrings}
+                    />
+                </div>
+
+                <div style={{ display: "flex", flexDirection: "column", margin: "20px" }}>
+
 
                     <Toggle label="Estado" onText="Abierto" offText="Cerrado"
-                        onChange={(event: React.MouseEvent<HTMLElement>, checked?: boolean) => setFormFields({ ...formField, Estado: checked })} />
+                        onChange={(event: React.MouseEvent<HTMLElement>, checked?: boolean) => setFormFields({ ...formFields, Estado: checked })} />
                     <Dropdown
-                        onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => setFormFields({ ...formField, TipoDeGrupo: option.text })}
+                        onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => setFormFields({ ...formFields, TipoDeGrupo: option.text })}
                         placeholder={groupSelected?.TipoDeGrupo}
                         label="Tipo de Grupo"
                         options={groupTypes}
                         styles={dropdownStyles}
                     />
                     <Dropdown
-                        onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => setFormFields({ ...formField, Tematica: option.text })}
+                        onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => setFormFields({ ...formFields, Tematica: option.text })}
                         placeholder={groupSelected?.Tematica}
                         label="Tematica"
                         options={themes}
                         styles={dropdownStyles}
                     />
-                </Stack>
-            </Stack>
+                </div>
+            </div>
+            <div style={{ display: visible === false ? "none" : "", boxShadow: "10px 10px 10px black", backgroundColor: "yellow", padding: "10px" }}>
+                <div>
+                    {messageErrors.map((e) =>
+                        <p>{e}</p>
+                    )}
+                </div>
+            </div>
         </>
     );
 };

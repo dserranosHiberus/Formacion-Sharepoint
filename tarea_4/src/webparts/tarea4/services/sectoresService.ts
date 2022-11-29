@@ -5,7 +5,6 @@ import { directorioBLL } from "./directorioBLL";
 
 // *****CONSULTA DE LOS DATOS DE LA LISTA*****
 const getSectoresInfo = async (): Promise<ISectores[]> => {
-
     let sectoresList = await directorioBLL.getSectorsArray()
     return sectoresList.map((item) => ({
         ID: item.ID,

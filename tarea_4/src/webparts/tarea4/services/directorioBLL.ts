@@ -11,6 +11,7 @@ const addGroup = async (formField: IFormFields) => {
         .web.lists.getById(IdListGrupos)
         .items.add({
             SectorAsociadoId: formField.SectorAsociadoId,
+            CodigoDeGrupo: formField.CodigoDeGrupo,
             Denominacion: formField.Denominacion,
             Descripcion: formField.Descripcion,
             FechaDeCreacion: formField.FechaDeCreacion,
@@ -29,6 +30,7 @@ const editGroup = async (formField: IFormFields, Id: number) => {
         .items.getById(Id)
         .update({
             SectorAsociadoId: formField.SectorAsociadoId,
+            CodigoDeGrupo: formField.CodigoDeGrupo,
             Denominacion: formField.Denominacion,
             Descripcion: formField.Descripcion,
             FechaDeCreacion: formField.FechaDeCreacion,

@@ -32,9 +32,9 @@ export interface ISectorId {
 
 export interface IGrupos {
     ID: number;
-    CodigoDeGrupo: string;
     SectorAsociado: any;
     SectorAsociadoId: string | number;
+    CodigoDeGrupo: string;
     Denominacion: string;
     Descripcion: string;
     FechaDeCreacion: string;

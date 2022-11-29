@@ -2,17 +2,17 @@ import * as React from 'react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-import { SPContext } from '../Tarea4';
 import { IFormFields, IGrupos } from '../../models/Interfaces';
-import { getSP } from '../../../../pnpjsConfig';
 
 import { sectoresService } from '../../services/sectoresService';
 import { gruposService } from "../../services/gruposService";
+import { validates } from '../../services/validates';
 
 import { TextField } from '@fluentui/react/lib/TextField';
-import { Stack, IStackProps, IStackStyles } from '@fluentui/react/lib/Stack';
+import { Stack, IStackProps } from '@fluentui/react/lib/Stack';
 import { PrimaryButton } from '@fluentui/react/lib/Button';
 import { Toggle } from '@fluentui/react/lib/Toggle';
+
 import {
     DatePicker,
     DayOfWeek,
@@ -20,15 +20,16 @@ import {
     IDropdownOption,
     IDropdownStyles,
     defaultDatePickerStrings,
-    values
 } from '@fluentui/react';
-import { validates } from '../../services/validates';
 
+// *****FUNCION CREAR GRUPO******
 function CreateGrupo() {
 
     const navigate = useNavigate()
 
-    const [groupSelected, setGroupSelected] = useState<IGrupos>()
+    const [visible, setVisible] = useState(false)
+    const [messageErrors, setMessageErrors] = useState<any[]>([])
+
     const [sectors, setSectors] = useState<IDropdownOption[]>([])
     const [groupTypes, setGroupTypes] = useState<IDropdownOption[]>([])
     const [themes, setThemes] = useState<IDropdownOption[]>([])
@@ -38,8 +39,8 @@ function CreateGrupo() {
         CodigoDeGrupo: "",
         Denominacion: "",
         Descripcion: "",
-        FechaDeCreacion: new Date(),
-        FechaDeFinalizacion: new Date(),
+        FechaDeCreacion: null,
+        FechaDeFinalizacion: null,
         Estado: false,
         TipoDeGrupo: "",
         Tematica: "",
@@ -48,9 +49,11 @@ function CreateGrupo() {
     const createGroup = async () => {
 
         let messageError = validates.checkFieldsCreate(formField)
+        setMessageErrors(messageError)
         console.log(messageError)
-        if (!messageError || messageError.length == 0) {
 
+        if (!messageError || messageError.length == 0) {
+            setVisible(false)
             await gruposService.createGroup(formField)
             try {
                 alert(`El grupo ha sido creado correctamente!`);
@@ -65,7 +68,7 @@ function CreateGrupo() {
                 }, 1000)
             }
         } else {
-            alert(messageError)
+            setVisible(true)
         }
     }
 
@@ -88,27 +91,19 @@ function CreateGrupo() {
 
     }, [])
 
-    const stackTokens = { childrenGap: 50 };
-    const stackStyles: Partial<IStackStyles> = { root: { width: 650 } };
     const columnProps: Partial<IStackProps> = {
         tokens: { childrenGap: 15 },
         styles: { root: { width: 300 } },
     };
 
-    const [firstDayOfWeek, setFirstDayOfWeek] = React.useState(DayOfWeek.Monday);
-
     const dropdownStyles: Partial<IDropdownStyles> = {
         dropdown: { width: 300 },
     };
 
-    const onDropdownChange = React.useCallback((event: React.FormEvent<HTMLDivElement>, option: IDropdownOption) => {
-        setFirstDayOfWeek(option.key as number);
-    }, []);
-
     return (
         <>
-            <Stack horizontal tokens={stackTokens} styles={stackStyles}>
-                <Stack {...columnProps}>
+            <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
+                <div style={{ display: "flex", flexDirection: "column", margin: "20px" }}>
                     <Dropdown
                         onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => setFormFields({ ...formField, SectorAsociadoId: option.key })}
                         label="Sector Asociado"
@@ -132,7 +127,7 @@ function CreateGrupo() {
                         placeholder="Selecciona una Fecha"
                         onSelectDate={(date: Date) => setFormFields({ ...formField, FechaDeCreacion: date })}
                         label="Fecha de Creación"
-                        firstDayOfWeek={firstDayOfWeek}
+                        firstDayOfWeek={DayOfWeek.Monday}
                         ariaLabel="Select a date"
                         strings={defaultDatePickerStrings}
                     />
@@ -140,13 +135,13 @@ function CreateGrupo() {
                         placeholder="Selecciona una Fecha"
                         onSelectDate={(date: Date) => setFormFields({ ...formField, FechaDeFinalizacion: date })}
                         label="Fecha de Finalización"
-                        firstDayOfWeek={firstDayOfWeek}
+                        firstDayOfWeek={DayOfWeek.Monday}
                         ariaLabel="Select a date"
                         strings={defaultDatePickerStrings}
                     />
-                </Stack>
+                </div>
 
-                <Stack {...columnProps}>
+                <div style={{ display: "flex", flexDirection: "column", margin: "20px" }}>
                     <Stack horizontal horizontalAlign={'end'} {...columnProps}>
                         <PrimaryButton style={{ maxWidth: "100px" }} text="Crear Datos" onClick={() => createGroup()} allowDisabledFocus />
                         <Link to={'/'} >
@@ -170,8 +165,15 @@ function CreateGrupo() {
                         options={themes}
                         styles={dropdownStyles}
                     />
-                </Stack>
-            </Stack>
+                </div>
+            </div>
+            <div style={{ display: visible === false ? "none" : "", boxShadow: "10px 10px 10px black", backgroundColor: "yellow", padding: "10px" }}>
+                <div>
+                    {messageErrors.map((e) =>
+                        <p>{e}</p>
+                    )}
+                </div>
+            </div>
         </>
     );
 };

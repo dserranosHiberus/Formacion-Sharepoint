@@ -35,9 +35,9 @@ const readGroupSelect = async (Id: number): Promise<IGrupos> => {
         Descripcion: CallGroupSelected.Descripcion,
         FechaDeCreacion: new Date(CallGroupSelected.FechaDeCreacion).toDateString(),
         FechaDeFinalizacion: new Date(CallGroupSelected.FechaDeFinalizacion).toDateString(),
+        Estado: CallGroupSelected.Estado,
         TipoDeGrupo: CallGroupSelected.TipoDeGrupo,
         Tematica: CallGroupSelected.Tematica,
-        Estado: CallGroupSelected.Estado,
     }
     // console.log("Grupo seleccionado", grupo)
     return grupo;
