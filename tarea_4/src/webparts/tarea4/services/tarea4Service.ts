@@ -1,12 +1,12 @@
 import { getSP } from "../../../pnpjsConfig";
-import { IGrupos, IFormFields, ISectores } from "../models/Interfaces";
+import { FormFields, Sectores } from "../models/index";
 import { IDropdownOption } from "@fluentui/react";
 
 const IdListGrupos = "f1193dcc-6ec0-44f0-9124-d526430752d0";
 const IdListSectores = "988b9d7c-a505-4396-ad62-61ab21b28f62";
 
 // *****CREAR UN GRUPO*****
-const addGroup = async (formField: IFormFields) => {
+const addGroup = async (formField: FormFields) => {
     await getSP()
         .web.lists.getById(IdListGrupos)
         .items.add({
@@ -19,12 +19,15 @@ const addGroup = async (formField: IFormFields) => {
             Estado: formField.Estado,
             TipoDeGrupo: formField.TipoDeGrupo,
             Tematica: formField.Tematica,
+            // Pais: formField.Pais,
+            // Ciudad: formField.Ciudad,
+            // Ambito: formField.Ambito
         })
     return
 }
 
 // *****EDITAR UN GRUPO*****
-const editGroup = async (formField: IFormFields, Id: number) => {
+const editGroup = async (formField: FormFields, Id: number) => {
     await getSP()
         .web.lists.getById(IdListGrupos)
         .items.getById(Id)
@@ -38,6 +41,9 @@ const editGroup = async (formField: IFormFields, Id: number) => {
             Estado: formField.Estado,
             TipoDeGrupo: formField.TipoDeGrupo,
             Tematica: formField.Tematica,
+            // Pais: formField.Pais,
+            // Ciudad: formField.Ciudad,
+            // Ambito: formField.Ambito
         })
     return
 }
@@ -49,7 +55,7 @@ const deleteGroup = async (Id: number) => {
 }
 
 // *****CONSULTA DE TODOS LOS GRUPOS*****
-const getGroupsArray = async (): Promise<IGrupos[]> => {
+const getGroupsArray = async (): Promise<any[]> => {
     const groupsCall = await getSP().web.lists.getById(IdListGrupos)
         .items.select("*", "SectorAsociado/Denominacion", "TaxCatchAll/Term")
         .expand("TaxCatchAll", "SectorAsociado")()
@@ -58,16 +64,17 @@ const getGroupsArray = async (): Promise<IGrupos[]> => {
 }
 
 // *****CONSULTA DEL GRUPO SELECCIONADO*****
-const getGroupSelectArray = async (Id: number): Promise<IGrupos> => {
+const getGroupSelectArray = async (Id: number): Promise<any> => {
     const callGroupSelected = await getSP().web.lists.getById(IdListGrupos)
         .items.getById(Id)
         .select("*", "SectorAsociado/Denominacion", "TaxCatchAll/Term")
         .expand("TaxCatchAll", "SectorAsociado")()
+    console.log(callGroupSelected)
     return callGroupSelected
 }
 
 // *****CONSULTA DE TODOS LOS SECTORES*****
-const getSectorsArray = async (): Promise<ISectores[]> => {
+const getSectorsArray = async (): Promise<Sectores[]> => {
     const sectoresCall = await getSP()
         .web.lists.getById(IdListSectores)
         .items.select("*")()
@@ -87,7 +94,7 @@ const getThematic = async (): Promise<any> => {
     return thematic
 }
 
-export const directorioBLL = {
+export const tarea4Service = {
     addGroup,
     editGroup,
     deleteGroup,

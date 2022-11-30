@@ -1,6 +1,6 @@
-import { IFormFields, IGrupos } from "../models/Interfaces"
+import { FormFields, Grupos } from "../models/index"
 
-const checkFieldsCreate = (formField: IFormFields) => {
+const checkFieldsCreate = (formField: FormFields) => {
     let messageErrorList = []
 
     if (!formField.SectorAsociadoId || formField.SectorAsociadoId === "") messageErrorList.push("No has seleccionado ningun sector asociado")
@@ -12,6 +12,10 @@ const checkFieldsCreate = (formField: IFormFields) => {
     if (!formField.Estado) messageErrorList.push("Error en el Estado")
     if (!formField.TipoDeGrupo || formField.TipoDeGrupo === "") messageErrorList.push("No has seleccionado ningun Tipo de Grupo")
     if (!formField.Tematica || formField.Tematica === "") messageErrorList.push("No has seleccionado ninguna Tematica")
+    // if (!formField.Pais || formField.Pais === null) messageErrorList.push("No has seleccionado ningun Pais")
+    // if (!formField.Ciudad || formField.Ciudad === null) messageErrorList.push("No has seleccionado ninguna Ciudad")
+    // if (!formField.Ambito || formField.Ambito === null) messageErrorList.push("No has seleccionado ningun Ambito")
+
 
     if (formField.FechaDeCreacion > formField.FechaDeFinalizacion) messageErrorList.push("La Fecha de Creacion no puede ser inferior a la fecha de Finalizacion")
     return messageErrorList
@@ -29,12 +33,16 @@ const completeForm = (formField: any, groupSelected: any) => {
     if (formField.Estado == null || !formField.Estado) { newFormFields.Estado = (groupSelected?.Estado) }
     if (formField.TipoDeGrupo == null || !formField.TipoDeGrupo || formField.TipoDeGrupo === "") { newFormFields.TipoDeGrupo = (groupSelected?.TipoDeGrupo) }
     if (formField.Tematica == null || !formField.Tematica || formField.Tematica === "") { newFormFields.Tematica = (groupSelected?.Tematica) }
+    // if (formField.Pais == null || !formField.Pais || formField.Pais === "") { newFormFields.Pais = (groupSelected?.Pais) }
+    // if (formField.Ciudad == null || !formField.Ciudad || formField.Ciudad === "") { newFormFields.Ciudad = (groupSelected?.Ciudad) }
+    // if (formField.Ambito == null || !formField.Ambito || formField.Ambito === "") { newFormFields.Ambito = (groupSelected?.Ambito) }
+
 
     console.log(newFormFields)
     return newFormFields
 }
 
-const checkFieldsEdit = (formField: IFormFields) => {
+const checkFieldsEdit = (formField: FormFields) => {
     let messageErrorList = []
     if (formField.FechaDeCreacion > formField.FechaDeFinalizacion) messageErrorList.push("La Fecha de Creacion no puede ser inferior a la fecha de Finalizacion")
     return messageErrorList

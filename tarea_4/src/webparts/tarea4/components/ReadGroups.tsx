@@ -2,8 +2,8 @@ import * as React from "react";
 // import styles from "../Taller3.module.scss";
 import { Link } from 'react-router-dom'
 
-import { IGrupos } from '../../models/Interfaces';
-import { gruposService } from "../../services/gruposService";
+import { Grupos } from '../models/index';
+import { tarea4BLL } from "../services/tarea4BLL";
 
 import {
     DocumentCard,
@@ -12,17 +12,17 @@ import {
     IDocumentCardStyles,
 } from '@fluentui/react/lib/DocumentCard';
 import { getTheme, IStackProps, PrimaryButton, Stack } from '@fluentui/react';
-import { validates } from "../../services/validates";
+import { validates } from "../services/validates";
 
 
 
-const GruposCards = () => {
-    const [groupList, setGroupList] = React.useState<IGrupos[]>([])
+const ReadGroups = () => {
+    const [groupList, setGroupList] = React.useState<Grupos[]>([])
     const theme = getTheme();
 
     React.useEffect(() => {
         const getGrupos = async () => {
-            const responseGroups = await gruposService.readGroups()
+            const responseGroups = await tarea4BLL.readGroups()
             setGroupList(responseGroups)
         }
         getGrupos()
@@ -98,4 +98,4 @@ const GruposCards = () => {
     )
 }
 
-export default GruposCards;
+export default ReadGroups;

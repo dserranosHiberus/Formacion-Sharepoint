@@ -1,15 +1,18 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-import { IGrupos, IFormFields } from '../../models/Interfaces';
+import { SPContext } from './Tarea4';
 
-import { sectoresService } from '../../services/sectoresService';
-import { gruposService } from "../../services/gruposService";
-import { validates } from '../../services/validates';
+import { FormFields } from '../models/index';
+
+import { tarea4BLL } from '../services/tarea4BLL';
+import { validates } from '../services/validates';
+
+// import { TaxonomyPicker, IPickerTerms } from "@pnp/spfx-controls-react/lib/TaxonomyPicker";
 
 import { TextField } from '@fluentui/react/lib/TextField';
-import { Stack, IStackProps, IStackStyles } from '@fluentui/react/lib/Stack';
+import { Stack, IStackProps } from '@fluentui/react/lib/Stack';
 import { PrimaryButton } from '@fluentui/react/lib/Button';
 import { Toggle } from '@fluentui/react/lib/Toggle';
 import {
@@ -21,20 +24,20 @@ import {
     defaultDatePickerStrings,
 } from '@fluentui/react';
 
-const EditGrupo = () => {
+// *****FUNCION CREAR GRUPO******
+function CreateGrupo() {
 
+    const { context } = React.useContext(SPContext)
     const navigate = useNavigate()
 
     const [visible, setVisible] = useState(false)
     const [messageErrors, setMessageErrors] = useState<any[]>([])
 
-    const { groupId } = useParams()
-    const [groupSelected, setGroupSelected] = useState<IGrupos>()
     const [sectors, setSectors] = useState<IDropdownOption[]>([])
     const [groupTypes, setGroupTypes] = useState<IDropdownOption[]>([])
     const [themes, setThemes] = useState<IDropdownOption[]>([])
 
-    const [formFields, setFormFields] = useState<IFormFields>({
+    const [formFields, setFormFields] = useState<FormFields>({
         SectorAsociadoId: "",
         CodigoDeGrupo: "",
         Denominacion: "",
@@ -44,32 +47,27 @@ const EditGrupo = () => {
         Estado: false,
         TipoDeGrupo: "",
         Tematica: "",
+        // Pais: null,
+        // Ciudad: null,
+        // Ambito: []
+
     })
 
-    // *****FUNCION ACTUALIZAR GRUPO******
-    const updateGroup = async () => {
-        console.log(formFields)
-        let newFormFieldList: IFormFields = await validates.completeForm(formFields, groupSelected)
-        Object.keys(formFields).forEach(old => {
-            Object.keys(newFormFieldList).forEach(nw => {
-                if (old === nw) {
-                    formFields[old] = newFormFieldList[nw]
-                }
-            })
-        })
-        console.log(formFields)
+    const createGroup = async () => {
 
-        let messageError = validates.checkFieldsEdit(formFields)
+        let messageError = validates.checkFieldsCreate(formFields)
         setMessageErrors(messageError)
+        console.log(messageError)
 
         if (!messageError || messageError.length == 0) {
             setVisible(false)
-            await gruposService.updateGroup(formFields, parseInt(groupId))
+            await tarea4BLL.createGroup(formFields)
             try {
-                alert(`El grupo ${groupId} ha sido actualizado correctamente!`);
+                alert(`El grupo ha sido creado correctamente!`);
                 setTimeout(() => {
                     navigate('/')
                 }, 1000)
+
             } catch (error) {
                 alert("Ha surgido un error al editar el grupo");
                 setTimeout(() => {
@@ -81,70 +79,54 @@ const EditGrupo = () => {
         }
     }
 
-    // *****FUNCION BORRAR GRUPO*****
-    const deleteGroup = async () => {
-        let option: boolean = window.confirm("Seguro que quieres eliminar el Grupo???")
-        if (option === true) {
-            await gruposService.deleteGroup(parseInt(groupId))
-            try {
-                alert(`El grupo ${groupId} ha sido borrado correctamente!`);
-                setTimeout(() => {
-                    navigate('/')
-                }, 1000)
-
-            } catch (error) {
-                alert("Ha surgido un error al borrar el grupo");
-                setTimeout(() => {
-                    navigate('/')
-                }, 1000)
-            }
-        } else {
-            console.log("Borrado cancelado")
-            alert("Se ha cancelado el borrado")
-            setTimeout(() => {
-                navigate('/')
-            }, 1000)
-        }
-    }
-
     React.useEffect(() => {
-        const getGrupo = async () => {
-            let callGroupSelected: IGrupos = await gruposService.readGroupSelect(parseInt(groupId))
-            setGroupSelected(callGroupSelected)
-        }
-        const getSectores = async () => {
-            let callSectors: IDropdownOption[] = await sectoresService.getSectorDenomination()
+        const getAssociatedSector = async () => {
+            let callSectors: IDropdownOption[] = await tarea4BLL.getSectorDenomination()
             setSectors(callSectors)
         }
-        const getTipoDeGrupos = async () => {
-            let callGroupTypes: IDropdownOption[] = await gruposService.getGroupTypes()
+        const getTypesOfGroups = async () => {
+            let callGroupTypes: IDropdownOption[] = await tarea4BLL.getGroupTypes()
             setGroupTypes(callGroupTypes)
         }
         const getThemes = async () => {
-            let callThematics: IDropdownOption[] = await gruposService.getThematic()
-            setThemes(callThematics)
+            let callThemes: IDropdownOption[] = await tarea4BLL.getThematic()
+            setThemes(callThemes)
         }
-        getGrupo();
-        getSectores();
-        getTipoDeGrupos();
+        getAssociatedSector();
+        getTypesOfGroups();
         getThemes();
+
     }, [])
 
     const columnProps: Partial<IStackProps> = {
         tokens: { childrenGap: 15 },
         styles: { root: { width: 300 } },
     };
+
     const dropdownStyles: Partial<IDropdownStyles> = {
         dropdown: { width: 300 },
     };
+
+    // function onServicePickerPaisChange(name: IPickerTerms) {
+    //     console.log(name)
+    //     setFormFields({ ...formFields, Pais: name })
+    // }
+    // function onServicePickerCiudadChange(name: IPickerTerms) {
+    //     console.log(name)
+    //     setFormFields({ ...formFields, Ciudad: name })
+    // }
+    // function onServicePickerAmbitoChange(name: IPickerTerms) {
+    //     console.log(name)
+    //     setFormFields({ ...formFields, Ambito: name })
+    // }
 
     return (
         <>
             <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                 <div style={{ display: "flex", flexDirection: "column", margin: "20px" }}>
+
                     <Stack horizontal horizontalAlign={'start'} {...columnProps}>
-                        <PrimaryButton style={{ maxWidth: "100px" }} text="Modificar Datos" onClick={() => updateGroup()} allowDisabledFocus />
-                        <PrimaryButton style={{ maxWidth: "100px" }} text="Borrar Grupo" onClick={() => deleteGroup()} allowDisabledFocus />
+                        <PrimaryButton style={{ maxWidth: "100px" }} text="Crear Datos" onClick={() => createGroup()} allowDisabledFocus />
                         <Link to={'/'} >
                             <PrimaryButton style={{ maxWidth: "100px" }} text="Volver" allowDisabledFocus />
                         </Link>
@@ -157,27 +139,29 @@ const EditGrupo = () => {
                         styles={dropdownStyles}
                     />
                     <TextField
-                        placeholder={groupSelected?.CodigoDeGrupo}
+                        placeholder="Introduce un Codigo de Grupo"
                         onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => setFormFields({ ...formFields, CodigoDeGrupo: newValue })}
                         label="Codigo De Grupo" />
-                    <TextField id={'denominacion'}
+                    <TextField
+                        placeholder="Introduce su Denominacion"
                         onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => setFormFields({ ...formFields, Denominacion: newValue })}
-                        placeholder={groupSelected?.Denominacion} label="Denominación" />
-                    <TextField id={'descripcion'}
+                        label="Denominación" />
+                    <TextField
+                        placeholder="Introduce una descripcion"
                         onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => setFormFields({ ...formFields, Descripcion: newValue })}
-                        placeholder={groupSelected?.Descripcion} label="Descripción" multiline rows={3} />
+                        label="Descripción" multiline rows={3} />
                     <DatePicker
-                        id={'createDate'}
+                        placeholder="Selecciona una Fecha"
                         onSelectDate={(date: Date) => setFormFields({ ...formFields, FechaDeCreacion: date })}
-                        placeholder={groupSelected?.FechaDeCreacion}
                         label="Fecha de Creación"
                         firstDayOfWeek={DayOfWeek.Monday}
                         ariaLabel="Select a date"
                         strings={defaultDatePickerStrings}
+                        initialPickerDate={new Date}
                     />
                     <DatePicker
+                        placeholder="Selecciona una Fecha"
                         onSelectDate={(date: Date) => setFormFields({ ...formFields, FechaDeFinalizacion: date })}
-                        placeholder={groupSelected?.FechaDeFinalizacion}
                         label="Fecha de Finalización"
                         firstDayOfWeek={DayOfWeek.Monday}
                         ariaLabel="Select a date"
@@ -187,28 +171,51 @@ const EditGrupo = () => {
 
                 <div style={{ display: "flex", flexDirection: "column", margin: "20px" }}>
 
-
                     <Toggle label="Estado" onText="Abierto" offText="Cerrado"
                         onChange={(event: React.MouseEvent<HTMLElement>, checked?: boolean) => setFormFields({ ...formFields, Estado: checked })} />
                     <Dropdown
+                        placeholder="Selecciona una opcion"
                         onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => setFormFields({ ...formFields, TipoDeGrupo: option.text })}
-                        placeholder={groupSelected?.TipoDeGrupo}
                         label="Tipo de Grupo"
                         options={groupTypes}
                         styles={dropdownStyles}
                     />
                     <Dropdown
+                        placeholder="Selecciona una opcion"
                         onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => setFormFields({ ...formFields, Tematica: option.text })}
-                        placeholder={groupSelected?.Tematica}
                         label="Tematica"
                         options={themes}
                         styles={dropdownStyles}
                     />
+                    {/* <TaxonomyPicker allowMultipleSelections={false}
+                        placeholder="Selecciona una opcion"
+                        termsetNameOrID="9a43e0c6-0ed4-41e3-9f86-253fe641821a"
+                        panelTitle="Selecciona un Pais"
+                        label="Pais"
+                        context={context as any}
+                        onChange={onServicePickerPaisChange}
+                        isTermSetSelectable={false} />
+                    <TaxonomyPicker allowMultipleSelections={false}
+                        placeholder="Selecciona una opcion"
+                        termsetNameOrID="a4da7450-f8c6-4352-86fa-754e2dcd4b52"
+                        panelTitle="Selecciona una Ciudad"
+                        label="Ciudad"
+                        context={context as any}
+                        onChange={onServicePickerCiudadChange}
+                        isTermSetSelectable={false} />
+                    <TaxonomyPicker allowMultipleSelections={true}
+                        placeholder="Selecciona una opcion"
+                        termsetNameOrID="b99a43de-59e8-4876-9ba4-572d9cc59ab6"
+                        panelTitle="Selecciona un Ambito"
+                        label="Ambito"
+                        context={context as any}
+                        onChange={onServicePickerAmbitoChange}
+                        isTermSetSelectable={true} /> */}
                 </div>
             </div>
             <div style={{ display: visible === false ? "none" : "", boxShadow: "10px 10px 10px black", backgroundColor: "yellow", padding: "10px" }}>
                 <div>
-                    {messageErrors.map((e) =>
+                    {messageErrors.map((e: string) =>
                         <p>{e}</p>
                     )}
                 </div>
@@ -216,5 +223,4 @@ const EditGrupo = () => {
         </>
     );
 };
-export default EditGrupo;
-
+export default CreateGrupo;

@@ -11,7 +11,7 @@ import { IReadonlyTheme } from "@microsoft/sp-component-base";
 
 import * as strings from "Tarea4WebPartStrings";
 import Tarea4 from "./components/Tarea4";
-import { ITarea4Props } from "./models/Interfaces";
+
 import { getSP } from "../../pnpjsConfig"
 
 export interface ITarea4WebPartProps {
@@ -25,7 +25,7 @@ export default class Tarea4WebPart extends BaseClientSideWebPart<ITarea4WebPartP
   private _environmentMessage: string = "";
 
   public render(): void {
-    const element: React.ReactElement<ITarea4Props> = React.createElement(
+    const element: React.ReactElement<any> = React.createElement(
       Tarea4,
       {
         description: this.properties.description,
