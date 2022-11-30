@@ -29,7 +29,7 @@ const GruposCards = () => {
     }, [])
 
     const cardStyles: IDocumentCardStyles = {
-        root: { display: 'inline-block', marginRight: 20, marginBottom: 20, width: 500 },
+        root: { display: 'inline-block', marginRight: 10, marginBottom: 10, width: 600 },
     };
 
     const columnProps: Partial<IStackProps> = {
@@ -39,10 +39,10 @@ const GruposCards = () => {
 
     return (
         <>
-            <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
-                <Stack horizontal horizontalAlign={'end'} {...columnProps}>
+            <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" }}>
+                <Stack horizontal horizontalAlign={'start'} {...columnProps}>
                     <Link to={'/createGroup/'} {...columnProps}>
-                        <PrimaryButton style={{ width: "100%" }} text="Crear Grupo" allowDisabledFocus />
+                        <PrimaryButton style={{ width: "100%", margin: "10px" }} text="Crear Grupo" allowDisabledFocus />
                     </Link>
                 </Stack>
                 {groupList.map(item => (

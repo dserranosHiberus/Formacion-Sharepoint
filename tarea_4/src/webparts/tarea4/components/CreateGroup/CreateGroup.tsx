@@ -104,6 +104,13 @@ function CreateGrupo() {
         <>
             <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                 <div style={{ display: "flex", flexDirection: "column", margin: "20px" }}>
+
+                    <Stack horizontal horizontalAlign={'start'} {...columnProps}>
+                        <PrimaryButton style={{ maxWidth: "100px" }} text="Crear Datos" onClick={() => createGroup()} allowDisabledFocus />
+                        <Link to={'/'} >
+                            <PrimaryButton style={{ maxWidth: "100px" }} text="Volver" allowDisabledFocus />
+                        </Link>
+                    </Stack>
                     <Dropdown
                         onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => setFormFields({ ...formField, SectorAsociadoId: option.key })}
                         label="Sector Asociado"
@@ -130,6 +137,7 @@ function CreateGrupo() {
                         firstDayOfWeek={DayOfWeek.Monday}
                         ariaLabel="Select a date"
                         strings={defaultDatePickerStrings}
+                        initialPickerDate={new Date}
                     />
                     <DatePicker
                         placeholder="Selecciona una Fecha"
@@ -142,12 +150,6 @@ function CreateGrupo() {
                 </div>
 
                 <div style={{ display: "flex", flexDirection: "column", margin: "20px" }}>
-                    <Stack horizontal horizontalAlign={'end'} {...columnProps}>
-                        <PrimaryButton style={{ maxWidth: "100px" }} text="Crear Datos" onClick={() => createGroup()} allowDisabledFocus />
-                        <Link to={'/'} >
-                            <PrimaryButton style={{ maxWidth: "100px" }} text="Volver" allowDisabledFocus />
-                        </Link>
-                    </Stack>
 
                     <Toggle label="Estado" onText="Abierto" offText="Cerrado"
                         onChange={(event: React.MouseEvent<HTMLElement>, checked?: boolean) => setFormFields({ ...formField, Estado: checked })} />
